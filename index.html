@@ -225,21 +225,139 @@
 
 <!-- FLUJO -->
 <div id="s-flujo" class="section">
-  <div class="card" style="margin-bottom:20px">
-    <div class="section-hd">Cadena de valor — hacé clic en cada proceso para ver los documentos</div>
-    <div class="flow-row" id="flow-row"></div>
-    <div class="detail-panel" id="flow-detail">
-      <div style="font-size:15px;font-weight:500;margin-bottom:8px" id="fd-title"></div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:14px" id="fd-desc"></div>
-      <div class="docs-grid" id="fd-docs"></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="section-hd">Procesos de apoyo — transversales al sistema</div>
-    <div id="apoyo-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px"></div>
-  </div>
+<style>
+@keyframes dash2{to{stroke-dashoffset:-24}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.conn-a{stroke-dasharray:8 4;animation:dash2 1.8s linear infinite;opacity:.45}
+.conn-a.sel{opacity:1;animation:dash2 .7s linear infinite}
+.node-g{cursor:pointer}
+.node-g rect{transition:filter .15s}
+.node-g:hover rect{filter:brightness(.9)}
+.dt-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;animation:fadeInUp .25s ease both;margin-bottom:16px}
+.dt-hd{padding:14px 18px 12px;border-bottom:0.5px solid var(--border);display:flex;align-items:flex-start;gap:12px}
+.dt-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;font-weight:500}
+.dt-docs{padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dlink{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:var(--gray-bg);border:0.5px solid var(--border);text-decoration:none;color:var(--text);transition:background .15s}
+.dlink:hover{background:var(--card);border-color:var(--blue)}
+.dlink-lbl{font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.step-dots2{display:flex;justify-content:center;gap:7px;margin:10px 0 0}
+.dot2{width:7px;height:7px;border-radius:50%;background:rgba(0,0,0,.15);cursor:pointer;transition:background .2s,transform .2s}
+.dot2.on{background:var(--blue);transform:scale(1.35)}
+.nav2{display:flex;justify-content:space-between;align-items:center;padding:10px 0 0}
+.nb{padding:5px 14px;font-size:13px;border:0.5px solid rgba(0,0,0,.15);border-radius:8px;background:none;cursor:pointer;color:var(--text2);transition:background .15s}
+.nb:hover{background:var(--gray-bg)}
+.nb:disabled{opacity:.3;cursor:default}
+</style>
+
+<div style="background:var(--card);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px">
+  <svg width="100%" viewBox="0 0 680 200" id="fsvg">
+    <defs>
+      <marker id="am" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+    <g class="node-g" id="fn0" onclick="fsel(0)"><rect id="fr0" x="16" y="28" width="114" height="56" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/><text x="73" y="50" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#0C447C">01</text><text x="73" y="66" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">Diseño y</text><text x="73" y="79" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">Desarrollo</text></g>
+    <g class="node-g" id="fn1" onclick="fsel(1)"><rect id="fr1" x="164" y="28" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="221" y="50" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">02</text><text x="221" y="66" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Compras y</text><text x="221" y="79" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Proveedores</text></g>
+    <g class="node-g" id="fn2" onclick="fsel(2)"><rect id="fr2" x="312" y="28" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="369" y="50" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">03</text><text x="369" y="66" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Fabricación</text><text x="369" y="79" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">y Ensamble</text></g>
+    <g class="node-g" id="fn3" onclick="fsel(3)"><rect id="fr3" x="460" y="28" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="517" y="50" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">04</text><text x="517" y="66" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Verificación</text><text x="517" y="79" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">y Validación</text></g>
+    <g class="node-g" id="fn4" onclick="fsel(4)"><rect id="fr4" x="460" y="116" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="517" y="138" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">05</text><text x="517" y="154" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Control</text><text x="517" y="167" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">de NC</text></g>
+    <g class="node-g" id="fn5" onclick="fsel(5)"><rect id="fr5" x="312" y="116" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="369" y="138" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">06</text><text x="369" y="154" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Instalación</text><text x="369" y="167" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">en Campo</text></g>
+    <g class="node-g" id="fn6" onclick="fsel(6)"><rect id="fr6" x="164" y="116" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="221" y="138" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">07</text><text x="221" y="154" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Monitoreo</text><text x="221" y="167" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">y Análisis</text></g>
+    <g class="node-g" id="fn7" onclick="fsel(7)"><rect id="fr7" x="16" y="116" width="114" height="56" rx="10" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1.5"/><text x="73" y="138" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#27500A">08</text><text x="73" y="154" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#27500A">Logística</text><text x="73" y="167" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#27500A">Inversa</text></g>
+    <line id="fc01" class="conn-a sel" x1="130" y1="56" x2="164" y2="56" stroke="#185FA5" stroke-width="1.5" marker-end="url(#am)"/>
+    <line id="fc12" class="conn-a" x1="278" y1="56" x2="312" y2="56" stroke="#888780" stroke-width="1" marker-end="url(#am)"/>
+    <line id="fc23" class="conn-a" x1="426" y1="56" x2="460" y2="56" stroke="#888780" stroke-width="1" marker-end="url(#am)"/>
+    <path id="fc34" class="conn-a" fill="none" stroke="#888780" stroke-width="1" d="M574 84 Q600 100 574 116" marker-end="url(#am)"/>
+    <line id="fc45" class="conn-a" x1="460" y1="144" x2="426" y2="144" stroke="#888780" stroke-width="1" marker-end="url(#am)"/>
+    <line id="fc56" class="conn-a" x1="312" y1="144" x2="278" y2="144" stroke="#888780" stroke-width="1" marker-end="url(#am)"/>
+    <line id="fc67" class="conn-a" x1="164" y1="144" x2="130" y2="144" stroke="#888780" stroke-width="1" marker-end="url(#am)"/>
+    <path id="fc70" class="conn-a" fill="none" stroke="#3B6D11" stroke-width="1.5" stroke-dasharray="5 4" d="M73 172 Q73 192 340 192 Q608 192 608 56 Q608 8 574 8 Q200 8 73 8 Q16 8 16 28" marker-end="url(#am)"/>
+    <text x="340" y="187" text-anchor="middle" font-size="10" fill="#3B6D11" opacity=".8">mejora continua</text>
+  </svg>
 </div>
 
+<div class="step-dots2" id="fdots"></div>
+<div id="fdetail" style="margin-top:12px"></div>
+<div class="nav2">
+  <button class="nb" id="fprev" onclick="fnav(-1)" disabled>← Anterior</button>
+  <span style="font-size:12px;color:var(--text2)" id="fsteplbl">Paso 1 de 8</span>
+  <button class="nb" id="fnext" onclick="fnav(1)">Siguiente →</button>
+</div>
+
+<script>
+(function(){
+const R="05_REGISTROS/",P="02_PROCEDIMIENTOS/",F="04_FORMULARIOS_VACIOS/",M="03_MATRICES_AMBIENTALES_SST/";
+const ST=[
+  {n:"01",t:"Diseño y Desarrollo",nm:"ISO 9001",c:"#185FA5",bg:"#E6F1FB",tc:"#0C447C",
+   d:"Diseño mecánico, óptico y electrónico. 6 versiones aprobadas V0.8→V1.3. Cálculos de FOV (150mm), resistencia al viento (Cd=0.6) y térmica (T°<40°C).",
+   r:"V1.3 · precisión IA 94.2%",
+   docs:[{l:"SGI-P-03 Procedimiento",u:P+"SGI-P-03_Diseno_Desarrollo.docx",t:"9001"},{l:"HIST V0.8→V1.3",u:R+"Diseño_Desarrollo/SGI-F-12-REG-HIST-Modificaciones_V08_V13.docx",t:"ok"}]},
+  {n:"02",t:"Compras y Proveedores",nm:"ISO 9001",c:"#5F5E5A",bg:"var(--gray-bg)",tc:"var(--text)",
+   d:"4 proveedores evaluados. Microelectrónica Córdoba 93 pts · Motoma 87 pts · Filamentos3D 81 pts · Insumos Agro 72 pts (condicional).",
+   r:"7 lotes · 4 proveedores aprobados",
+   docs:[{l:"SGI-P-04 Procedimiento",u:P+"SGI-P-04_Compras_Evaluacion_Proveedores.docx",t:"9001"},{l:"BOM Lotes Abr-May 2026",u:R+"F-11_BOM_Compras/SGI-F-11-REG-BOM-Lotes_Compra_Abril_Mayo2026.docx",t:"ok"}]},
+  {n:"03",t:"Fabricación y Ensamble",nm:"ISO 9001",c:"#5F5E5A",bg:"var(--gray-bg)",tc:"var(--text)",
+   d:"Impresión 3D ASA/PETG, tolerancia ±0.2mm. Ensamble electrónico, etiquetado QR. 4 unidades fabricadas con trazabilidad completa.",
+   r:"4 unidades · USD 54 costo final",
+   docs:[{l:"SGI-P-05 Procedimiento",u:P+"SGI-P-05_Fabricacion_Ensamble.docx",t:"9001"},{l:"Planilla Trazabilidad Mayo",u:R+"F-06_Trazabilidad/SGI-F-06-REG-TRAZ-Planilla_Mayo2026.docx",t:"ok"},{l:"Checklist Liberación",u:F+"SGI-F-22_Checklist_Liberacion_Producto.docx",t:"9001"}]},
+  {n:"04",t:"Verificación y Validación",nm:"ISO 9001",c:"#5F5E5A",bg:"var(--gray-bg)",tc:"var(--text)",
+   d:"Prueba IP65 en 3 unidades: lluvia simulada 10 min, todas aprobadas. Validación IA: 50 muestras reales, 94.2% de precisión, producto liberado.",
+   r:"IP65 ✓ · IA 94.2% · Liberado",
+   docs:[{l:"Reporte IP65 — 3 unidades ✓",u:R+"F-17_IP65/SGI-F-17-REG-IP65-SYK-202605-001-Tres_Unidades.docx",t:"ok"},{l:"Validación IA 94.2% ✓",u:R+"F-16_Validacion/SGI-F-16-REG-VAL-SYK-202605-001-Precision_IA.docx",t:"ok"}]},
+  {n:"05",t:"Control de NC",nm:"ISO 9001/14001/45001",c:"#854F0B",bg:"#FAEEDA",tc:"#412402",
+   d:"2 NCs detectadas y cerradas en plazo. NC-003: deformación techo ASA. NC-007: falsos positivos IA por ángulo del cono. Metodología 5 Porqués.",
+   r:"NC-003 cerrada 16/05 · NC-007 cerrada 22/05",
+   docs:[{l:"SGI-P-06 Procedimiento",u:P+"SGI-P-06_Control_No_Conformidades.docx",t:"9001"},{l:"NC-003 Deformación ASA ✓",u:R+"F-01_No_Conformidades/SGI-F-01-REG-NC-SYK-202605-003-Deformacion_ASA.docx",t:"ok"},{l:"NC-007 Falsos positivos IA ✓",u:R+"F-01_No_Conformidades/SGI-F-01-REG-NC-SYK-202605-007-Falsos_Positivos_IA.docx",t:"ok"}]},
+  {n:"06",t:"Instalación en Campo",nm:"ISO 9001/14001",c:"#5F5E5A",bg:"var(--gray-bg)",tc:"var(--text)",
+   d:"3 unidades instaladas en Villa María. Capacitación obligatoria: 5 participantes, todos aprobados. Encuesta post-instalación: 4.7/5 de satisfacción.",
+   r:"3 unidades en campo · 4.7/5 satisfacción",
+   docs:[{l:"Ficha de Instalación Campo",u:F+"SGI-F-18_Ficha_Instalacion_Campo.docx",t:"9001"},{l:"CAP 08/05 — 5/5 aprobados ✓",u:R+"F-05_Capacitaciones/SGI-F-05-REG-CAP-Instalacion_Segura-08052026.docx",t:"ok"},{l:"Encuesta R. Sánchez 4.7/5 ✓",u:R+"F-07_Encuestas/SGI-F-07-REG-ENC-Roberto_Sanchez-Mayo2026.docx",t:"ok"}]},
+  {n:"07",t:"Monitoreo y Análisis",nm:"ISO 9001/14001/45001",c:"#5F5E5A",bg:"var(--gray-bg)",tc:"var(--text)",
+   d:"Seguimiento semanal de plagas por lote. KPIs: IA 94.2%, autonomía 92 días, costo USD 54. 191 insectos contados, 2 alertas enviadas.",
+   r:"191 insectos · 2 alertas · KPIs ✓",
+   docs:[{l:"KPIs Abril-Mayo 2026 ✓",u:R+"F-09_KPIs/SGI-F-09-REG-KPI-Seguimiento_Abril_Mayo2026.docx",t:"ok"},{l:"Conteo Plagas R. Sánchez ✓",u:R+"F-19_Conteo_Plagas/SGI-F-19-REG-Conteo_Plagas_RobertoSanchez_Mayo2026.docx",t:"ok"},{l:"Informe Mensual Mayo ✓",u:R+"F-23_Informe/SGI-F-23-REG-Informe_Mensual_Mayo2026.docx",t:"ok"}]},
+  {n:"08",t:"Logística Inversa",nm:"ISO 14001",c:"#3B6D11",bg:"#EAF3DE",tc:"#173404",
+   d:"87.5% de baterías recuperadas (meta ≥80%). Convenio con planta RAEE en Córdoba. Reducción 41% en agroquímicos. 3 productores participaron.",
+   r:"87.5% baterías · 41% menos agroquím.",
+   docs:[{l:"Plan Logística Inversa (LOG-08)",u:M+"SGI-LOG-08_Plan_Logistica_Inversa.docx",t:"14001"},{l:"Registro LOG Mayo 2026 ✓",u:R+"F-08_Logistica_Inversa/SGI-F-08-REG-LOG-Logistica_Inversa-Mayo2026.docx",t:"ok"},{l:"Reducción Agroquímicos 41% ✓",u:R+"F-20_Agroquimicos/SGI-F-20-REG-Reduccion_Agroquimicos_Mayo2026.docx",t:"ok"}]},
+];
+let cur=0;
+const th=t=>{if(t==="ok")return'<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:#EAF3DE;color:#27500A;font-weight:500;flex-shrink:0">REG ✓</span>';if(t==="9001")return'<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:#E6F1FB;color:#0C447C;font-weight:500;flex-shrink:0">9001</span>';if(t==="14001")return'<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:#EAF3DE;color:#27500A;font-weight:500;flex-shrink:0">14001</span>';return "";};
+const dc=document.getElementById("fdots");
+dc.innerHTML=ST.map((_,i)=>`<div class="dot2${i===0?" on":""}" id="fd${i}" onclick="window._fsel(${i})"></div>`).join("");
+function render(i){
+  cur=i;const s=ST[i];
+  ST.forEach((_,j)=>{
+    const r=document.getElementById("fr"+j);
+    if(j===i){r.style.fill=s.bg;r.style.stroke=s.c;r.style.strokeWidth="2";}
+    else{r.style.fill="";r.style.stroke="";r.style.strokeWidth="";}
+    const d=document.getElementById("fd"+j);if(d)d.className="dot2"+(j===i?" on":"");
+  });
+  ["fc01","fc12","fc23","fc34","fc45","fc56","fc67","fc70"].forEach((id,idx)=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.classList.toggle("sel",idx===i||(i===7&&idx===7));
+  });
+  document.getElementById("fsteplbl").textContent=`Paso ${i+1} de 8`;
+  document.getElementById("fprev").disabled=i===0;
+  document.getElementById("fnext").disabled=i===7;
+  document.getElementById("fdetail").innerHTML=`
+    <div class="dt-card">
+      <div class="dt-hd">
+        <div class="dt-icon" style="background:${s.bg}"><span style="font-size:16px;font-weight:500;color:${s.c}">${s.n}</span></div>
+        <div style="flex:1"><div style="font-size:15px;font-weight:500">${s.t}</div><div style="font-size:12px;color:var(--text2);margin-top:2px">${s.nm}</div></div>
+        <div style="text-align:right"><div style="font-size:11px;color:var(--text2)">Resultado Mayo 2026</div><div style="font-size:12px;font-weight:500;color:${s.c};margin-top:2px">${s.r}</div></div>
+      </div>
+      <div style="padding:12px 18px;font-size:13px;color:var(--text2);line-height:1.6;border-bottom:0.5px solid var(--border)">${s.d}</div>
+      <div class="dt-docs">${s.docs.map(d=>`<a class="dlink" href="${d.u}"><i class="ti ti-file-text" style="font-size:14px;color:var(--text2)"></i><span class="dlink-lbl">${d.l}</span>${th(d.t)}</a>`).join("")}</div>
+    </div>`;
+}
+window._fsel=render;
+window.fsel=render;
+window.fnav=(dir)=>{const n=cur+dir;if(n>=0&&n<8)render(n);};
+render(0);
+})();
+</script>
+</div>
 <!-- DOCUMENTOS -->
 <div id="s-documentos" class="section">
   <div class="filter-row">
