@@ -4,743 +4,258 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Synkro-Eye — SGI Trinorma ISO 9001/14001/45001</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --navy:#1F3864;--blue:#185FA5;--blue-l:#E6F1FB;--blue-800:#0C447C;
-    --green:#3B6D11;--green-l:#EAF3DE;--green-800:#27500A;
-    --amber:#BA7517;--amber-l:#FAEEDA;--amber-800:#633806;
-    --red:#A32D2D;--red-l:#FCEBEB;
-    --gray-bg:#F8F8F6;--card:#fff;--border:rgba(0,0,0,0.1);
-    --text:#1a1a18;--text2:#5F5E5A;--text3:#888780;
-    --radius:8px;--radius-lg:12px;
-  }
-  @media(prefers-color-scheme:dark){
-    :root{--gray-bg:#1a1a18;--card:#242422;--border:rgba(255,255,255,0.1);
-      --text:#e8e6dc;--text2:#b4b2a9;--text3:#888780;
-      --blue-l:#0c2a42;--green-l:#0f2808;--amber-l:#2a1a02;
-      --blue-800:#85B7EB;--green-800:#C0DD97;--amber-800:#FAC775;}
-  }
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--gray-bg);color:var(--text);font-size:15px;line-height:1.6}
-  header{background:var(--navy);padding:20px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100}
-  header h1{font-size:18px;font-weight:500;color:#fff;margin:0}
-  header p{font-size:12px;color:#BDD7EE;margin:0}
-  .pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
-  nav{background:var(--card);border-bottom:0.5px solid var(--border);padding:0 32px;display:flex;gap:0;overflow-x:auto}
-  .nav-btn{padding:12px 16px;font-size:14px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;transition:color .15s,border-color .15s}
-  .nav-btn:hover{color:var(--text)}
-  .nav-btn.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
-  main{max-width:1100px;margin:0 auto;padding:28px 24px}
-  .section{display:none}.section.active{display:block}
-  .section-hd{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:14px}
-  .card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:20px}
-  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px}
-  .kpi-card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px}
-  .kpi-num{font-size:30px;font-weight:500;line-height:1}
-  .kpi-label{font-size:12px;color:var(--text2);margin-top:4px}
-  .kpi-ok{font-size:11px;color:var(--green);margin-top:4px}
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
-  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px}
-  .bar-wrap{background:rgba(0,0,0,0.06);border-radius:3px;height:8px;overflow:hidden;margin-top:6px}
-  .bar{height:8px;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
-  .flow-row{display:flex;gap:6px;align-items:stretch;margin-bottom:12px;overflow-x:auto;padding-bottom:4px}
-  .flow-step{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius);padding:10px 12px;cursor:pointer;min-width:100px;flex-shrink:0;transition:border-color .15s,background .15s}
-  .flow-step:hover,.flow-step.active{border-color:var(--blue);background:var(--blue-l)}
-  .flow-step-num{font-size:11px;font-weight:500;color:var(--blue)}
-  .flow-step-title{font-size:13px;font-weight:500;margin-top:2px}
-  .flow-step-sub{font-size:11px;color:var(--text3);margin-top:2px}
-  .arrow{display:flex;align-items:center;color:var(--text3);font-size:18px;padding:0 2px;flex-shrink:0}
-  .detail-panel{background:var(--card);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:20px;min-height:180px}
-  .doc-link{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--gray-bg);text-decoration:none;transition:background .15s;border:0.5px solid var(--border);margin-bottom:0}
-  .doc-link:hover{background:var(--card);border-color:var(--blue)}
-  .docs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
-  .tag{font-size:11px;padding:2px 7px;border-radius:4px;font-weight:500;flex-shrink:0}
-  .tag-9{background:var(--blue-l);color:var(--blue-800)}
-  .tag-14{background:var(--green-l);color:var(--green-800)}
-  .tag-45{background:var(--amber-l);color:var(--amber-800)}
-  .tag-ok{background:var(--green-l);color:var(--green-800)}
-  .tag-wip{background:var(--amber-l);color:var(--amber-800)}
-  .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-  .filter-btn{padding:6px 14px;border:0.5px solid var(--border);border-radius:var(--radius);font-size:13px;background:none;cursor:pointer;color:var(--text2);transition:background .15s,border-color .15s}
-  .filter-btn:hover{background:var(--gray-bg)}
-  .filter-btn.active{border-color:var(--blue);color:var(--blue);background:var(--blue-l)}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  th{text-align:left;padding:8px 12px;font-weight:500;font-size:12px;color:var(--text3);border-bottom:0.5px solid var(--border)}
-  td{padding:8px 12px;border-bottom:0.5px solid var(--border)}
-  tr:hover td{background:var(--gray-bg)}
-  .status-ok{color:var(--green);font-weight:500}
-  .status-wip{color:var(--amber);font-weight:500}
-  footer{text-align:center;padding:32px;font-size:12px;color:var(--text3)}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-  .fade-in{animation:fadeUp .4s ease both}
-  @media(max-width:700px){
-    .kpi-grid{grid-template-columns:repeat(2,1fr)}
-    .two-col,.three-col{grid-template-columns:1fr}
-    main{padding:16px 14px}
-    header{padding:14px 16px}
-  }
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
-<header>
-  <div style="width:42px;height:42px;background:#2E75B6;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-    <i class="ti ti-eye" style="color:#BDD7EE;font-size:22px"></i>
-  </div>
-  <div>
-    <h1>Synkro-Eye — Sistema de Gestión Integrado</h1>
-    <p>ISO 9001:2015 · ISO 14001:2015 · ISO 45001:2018 · Luján Luciano — D'Orazio Dayana · Mayo 2026</p>
-  </div>
-  <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">
-    <span class="pill" style="background:#2E75B6;color:#E6F1FB">ISO 9001</span>
-    <span class="pill" style="background:#3B6D11;color:#EAF3DE">ISO 14001</span>
-    <span class="pill" style="background:#BA7517;color:#FAEEDA">ISO 45001</span>
-  </div>
-</header>
+<!-- PARTICLES BACKGROUND -->
+<canvas id="canvas-bg"></canvas>
 
-<nav>
-  <button class="nav-btn active" onclick="showSection('dashboard',this)"><i class="ti ti-dashboard" style="margin-right:6px"></i>Dashboard</button>
-  <button class="nav-btn" onclick="showSection('flujo',this)"><i class="ti ti-route" style="margin-right:6px"></i>Flujo de procesos</button>
-  <button class="nav-btn" onclick="showSection('documentos',this)"><i class="ti ti-files" style="margin-right:6px"></i>Documentos</button>
-  <button class="nav-btn" onclick="showSection('registros',this)"><i class="ti ti-clipboard-check" style="margin-right:6px"></i>Registros</button>
-  <button class="nav-btn" onclick="showSection('estructura',this)"><i class="ti ti-folder" style="margin-right:6px"></i>Estructura</button>
+<!-- TOP NAV -->
+<nav class="topnav">
+  <a class="nav-logo" href="#" onclick="App.showSection('hero');return false">
+    <div class="nav-logo-mark">S</div>
+    <span class="nav-logo-text">Synkro-Eye</span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link active" data-sec="hero" onclick="App.showSection('hero')">Inicio</button>
+    <button class="nav-link" data-sec="dashboard" onclick="App.showSection('dashboard')">Dashboard</button>
+    <button class="nav-link" data-sec="flujo" onclick="App.showSection('flujo')">Procesos</button>
+    <button class="nav-link" data-sec="documentos" onclick="App.showSection('documentos')">Documentos</button>
+    <button class="nav-link" data-sec="timeline" onclick="App.showSection('timeline')">Timeline</button>
+    <button class="nav-link" data-sec="registros" onclick="App.showSection('registros')">Registros</button>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-icon" id="theme-btn" onclick="App.toggleTheme()" aria-label="Cambiar tema">☀️</button>
+  </div>
 </nav>
 
-<main>
+<div id="app">
 
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- HERO -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="sec-hero" class="section active" style="position:relative">
+  <div class="hero-eyebrow">
+    <span>⚡</span> Agricultura 4.0 · IoT · Inteligencia Artificial
+  </div>
+  <h1 class="hero-title" id="hero-title">Synkro-Eye</h1>
+  <p class="hero-sub">
+    Trampa inteligente híbrida solar para monitoreo y clasificación automática de plagas con IA local.
+    Desarrollada bajo SGI trinorma ISO 9001 / 14001 / 45001.
+  </p>
+  <div class="hero-badges">
+    <span class="badge badge-blue">ISO 9001:2015 · Calidad</span>
+    <span class="badge badge-green">ISO 14001:2015 · Ambiente</span>
+    <span class="badge badge-amber">ISO 45001:2018 · SST</span>
+    <span class="badge badge-blue">94.2% Precisión IA</span>
+    <span class="badge badge-green">USD 54 / unidad</span>
+  </div>
+  <div class="hero-cta">
+    <button class="btn-primary" onclick="App.showSection('dashboard')">Ver Dashboard →</button>
+    <button class="btn-secondary" onclick="App.showSection('flujo')">Flujo de Procesos</button>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <span style="font-size:16px">↓</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
 <!-- DASHBOARD -->
-<div id="s-dashboard" class="section active">
-  <div class="kpi-grid fade-in">
-    <div class="kpi-card" style="border-top:3px solid var(--blue)">
-      <div class="kpi-label">Precisión IA</div>
-      <div class="kpi-num" id="n1" style="color:var(--blue-800)">0%</div>
-      <div class="kpi-ok">meta ≥92% ✓</div>
-    </div>
-    <div class="kpi-card" style="border-top:3px solid var(--green);animation-delay:.06s">
-      <div class="kpi-label">Baterías recuperadas</div>
-      <div class="kpi-num" id="n2" style="color:var(--green-800)">0%</div>
-      <div class="kpi-ok">meta ≥80% ✓</div>
-    </div>
-    <div class="kpi-card" style="border-top:3px solid var(--green);animation-delay:.12s">
-      <div class="kpi-label">Reducción agroquím.</div>
-      <div class="kpi-num" id="n3" style="color:var(--green-800)">0%</div>
-      <div class="kpi-ok">meta ≥35% ✓</div>
-    </div>
-    <div class="kpi-card" style="border-top:3px solid var(--blue);animation-delay:.18s">
-      <div class="kpi-label">Autonomía solar</div>
-      <div class="kpi-num" id="n4" style="color:var(--blue-800)">0d</div>
-      <div class="kpi-ok">meta ≥90d ✓</div>
-    </div>
-    <div class="kpi-card" style="border-top:3px solid var(--blue);animation-delay:.24s">
-      <div class="kpi-label">Costo por unidad</div>
-      <div class="kpi-num" id="n5" style="color:var(--blue-800)">$0</div>
-      <div class="kpi-ok">meta ≤USD 60 ✓</div>
-    </div>
-  </div>
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="sec-dashboard" class="section">
+  <div class="container">
 
-  <div class="two-col fade-in" style="animation-delay:.3s">
-    <div class="card">
-      <div class="section-hd">Cumplimiento por norma — Auditoría AUD-2026-01</div>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div>
-          <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px">
-            <span style="color:var(--blue-800);font-weight:500"><i class="ti ti-award" style="margin-right:4px"></i>ISO 9001 — Calidad</span>
-            <span style="color:var(--blue-800);font-weight:500">96%</span>
-          </div>
-          <div class="bar-wrap"><div class="bar" id="b9001" style="background:var(--blue);width:0%"></div></div>
+    <div class="sec-header fade-up">
+      <div class="sec-tag">Dashboard</div>
+      <h2 class="sec-title">Indicadores de desempeño</h2>
+      <p class="sec-desc">Resultados reales del campo — mayo 2026. Hacé clic en cualquier KPI para ver detalles.</p>
+    </div>
+
+    <!-- KPI GRID -->
+    <div class="kpi-grid" id="kpi-grid"></div>
+
+    <div class="two-col" style="margin-bottom:28px">
+      <!-- NORMA BARS -->
+      <div class="glass" style="padding:24px">
+        <div class="sec-tag" style="margin-bottom:16px">Cumplimiento por norma</div>
+        <div id="norma-bars"></div>
+        <div style="margin-top:16px;padding:14px;background:rgba(76,175,130,0.1);border-radius:10px;border:1px solid rgba(76,175,130,0.2)">
+          <div style="font-size:13px;font-weight:600;color:var(--green2)">Estado general: SATISFACTORIO</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">REV-DIR-2026-01 · 25/05/2026 · 96% cumplimiento</div>
         </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px">
-            <span style="color:var(--green-800);font-weight:500"><i class="ti ti-leaf" style="margin-right:4px"></i>ISO 14001 — Ambiente</span>
-            <span style="color:var(--green-800);font-weight:500">94%</span>
-          </div>
-          <div class="bar-wrap"><div class="bar" id="b14001" style="background:var(--green);width:0%"></div></div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px">
-            <span style="color:var(--amber-800);font-weight:500"><i class="ti ti-shield-check" style="margin-right:4px"></i>ISO 45001 — SST</span>
-            <span style="color:var(--amber-800);font-weight:500">91%</span>
-          </div>
-          <div class="bar-wrap"><div class="bar" id="b45001" style="background:var(--amber);width:0%"></div></div>
-        </div>
-        <div style="padding:12px;background:var(--green-l);border-radius:var(--radius);margin-top:4px">
-          <div style="font-size:13px;color:var(--green-800);font-weight:500">Estado general del SGI: SATISFACTORIO</div>
-          <div style="font-size:12px;color:var(--green);margin-top:2px">REV-DIR-2026-01 · 25/05/2026 · 96% cumplimiento</div>
+      </div>
+      <!-- CHART -->
+      <div class="glass" style="padding:24px">
+        <div class="sec-tag" style="margin-bottom:16px">Evolución KPIs · Abril → Mayo 2026</div>
+        <div class="chart-wrap"><canvas id="kpi-chart"></canvas></div>
+        <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap">
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)"><span style="width:12px;height:2px;background:#4f8ef7;display:inline-block;border-radius:1px"></span>Precisión IA</span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)"><span style="width:12px;height:2px;background:#4caf82;display:inline-block;border-radius:1px"></span>Baterías rec.</span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)"><span style="width:12px;height:2px;background:#f0a843;display:inline-block;border-radius:1px;"></span>Agroquímicos</span>
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="section-hd">Evolución de KPIs — Abril → Mayo 2026</div>
-      <div style="position:relative;height:200px"><canvas id="kpiChart" role="img" aria-label="Evolución de KPIs clave de abril a mayo 2026">Precisión IA mejoró de 91% a 94.2%. Baterías recuperadas subió de 75% a 87.5%. Reducción agroquímicos pasó de 32% a 41%.</canvas></div>
-      <div style="display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--text2);flex-wrap:wrap">
-        <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:3px;background:#185FA5;display:inline-block;border-radius:2px"></span>Precisión IA</span>
-        <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:3px;background:#3B6D11;display:inline-block;border-radius:2px"></span>Baterías rec.</span>
-        <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:3px;background:#BA7517;display:inline-block;border-radius:2px"></span>Reducción agroquím.</span>
-      </div>
-    </div>
-  </div>
 
-  <div class="two-col fade-in" style="animation-delay:.4s">
-    <div class="card">
-      <div class="section-hd">No Conformidades — Mayo 2026</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--green-l);border-radius:var(--radius)">
-          <i class="ti ti-circle-check" style="color:var(--green);font-size:20px"></i>
+    <!-- SKILLS CLOUD -->
+    <div class="glass" style="padding:24px;margin-bottom:28px">
+      <div class="sec-tag" style="margin-bottom:8px">Tecnologías y habilidades</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:16px">Arrastrá para rotar la esfera</div>
+      <div id="skills-cloud"></div>
+    </div>
+
+    <!-- NC STATUS -->
+    <div class="three-col">
+      <div class="glass" style="padding:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <span style="font-size:20px">✅</span>
           <div>
-            <div style="font-size:13px;font-weight:500">NC-003 — Deformación techo ASA</div>
-            <div style="font-size:12px;color:var(--text2)">Cerrada 16/05 · Cono rediseñado 35°</div>
+            <div style="font-size:13px;font-weight:600">NC-003 · Deformación ASA</div>
+            <div style="font-size:11px;color:var(--text3)">Cerrada 16/05/2026</div>
           </div>
-          <a href="#" style="margin-left:auto;font-size:12px;color:var(--blue)">Ver doc</a>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--green-l);border-radius:var(--radius)">
-          <i class="ti ti-circle-check" style="color:var(--green);font-size:20px"></i>
+        <div style="font-size:12px;color:var(--text2)">Perfil de impresión corregido. Temperatura cama ajustada.</div>
+      </div>
+      <div class="glass" style="padding:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <span style="font-size:20px">✅</span>
           <div>
-            <div style="font-size:13px;font-weight:500">NC-007 — Falsos positivos IA</div>
-            <div style="font-size:12px;color:var(--text2)">Cerrada 22/05 · Perfil impresión corregido</div>
+            <div style="font-size:13px;font-weight:600">NC-007 · Falsos positivos IA</div>
+            <div style="font-size:11px;color:var(--text3)">Cerrada 22/05/2026</div>
           </div>
-          <a href="#" style="margin-left:auto;font-size:12px;color:var(--blue)">Ver doc</a>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--amber-l);border-radius:var(--radius)">
-          <i class="ti ti-alert-circle" style="color:var(--amber);font-size:20px"></i>
+        <div style="font-size:12px;color:var(--text2)">Cono anti-reflejo rediseñado a 35°. Precisión subió 3.2pp.</div>
+      </div>
+      <div class="glass" style="padding:20px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <span style="font-size:20px">⚠️</span>
           <div>
-            <div style="font-size:13px;font-weight:500">EM-001 — Exposición feromonas (leve)</div>
-            <div style="font-size:12px;color:var(--text2)">Cerrada 22/05 · EPP actualizado</div>
+            <div style="font-size:13px;font-weight:600">EM-001 · Exposición feromonas</div>
+            <div style="font-size:11px;color:var(--text3)">Cerrada 22/05/2026</div>
           </div>
-          <a href="#" style="margin-left:auto;font-size:12px;color:var(--blue)">Ver doc</a>
         </div>
+        <div style="font-size:12px;color:var(--text2)">EPP actualizado. Instructivo de manejo revisado.</div>
       </div>
     </div>
-    <div class="card">
-      <div class="section-hd">Unidades en campo — Mayo 2026</div>
-      <div style="position:relative;height:180px"><canvas id="unitsChart" role="img" aria-label="Gráfico de dona mostrando estado de las 4 unidades Synkro-Eye">3 unidades en campo (Roberto Sánchez, Carlos Medina, María López) y 1 en taller para pruebas de IA nocturna.</canvas></div>
-      <div style="display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--text2);flex-wrap:wrap">
-        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;background:#3B6D11;display:inline-block;border-radius:2px"></span>En campo (3)</span>
-        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;background:#BA7517;display:inline-block;border-radius:2px"></span>En taller (1)</span>
-      </div>
-    </div>
+
   </div>
-</div>
+</section>
 
-<!-- FLUJO -->
-<div id="s-flujo" class="section">
-<style>
-@keyframes dash2{to{stroke-dashoffset:-24}}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.conn-a{stroke-dasharray:8 4;animation:dash2 1.8s linear infinite;opacity:.45}
-.conn-a.sel{opacity:1;animation:dash2 .7s linear infinite}
-.node-g{cursor:pointer}
-.node-g rect{transition:filter .15s}
-.node-g:hover rect{filter:brightness(.9)}
-.dt-card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;animation:fadeInUp .25s ease both;margin-bottom:16px}
-.dt-hd{padding:14px 18px 12px;border-bottom:0.5px solid var(--border);display:flex;align-items:flex-start;gap:12px}
-.dt-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;font-weight:500}
-.dt-docs{padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.dlink{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:var(--gray-bg);border:0.5px solid var(--border);text-decoration:none;color:var(--text);transition:background .15s}
-.dlink:hover{background:var(--card);border-color:var(--blue)}
-.dlink-lbl{font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.step-dots2{display:flex;justify-content:center;gap:7px;margin:10px 0 0}
-.dot2{width:7px;height:7px;border-radius:50%;background:rgba(0,0,0,.15);cursor:pointer;transition:background .2s,transform .2s}
-.dot2.on{background:var(--blue);transform:scale(1.35)}
-.nav2{display:flex;justify-content:space-between;align-items:center;padding:10px 0 0}
-.nb{padding:5px 14px;font-size:13px;border:0.5px solid rgba(0,0,0,.15);border-radius:8px;background:none;cursor:pointer;color:var(--text2);transition:background .15s}
-.nb:hover{background:var(--gray-bg)}
-.nb:disabled{opacity:.3;cursor:default}
-</style>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- FLUJO DE PROCESOS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="sec-flujo" class="section">
+  <div class="container">
 
-<div style="background:var(--card);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px">
-  <svg width="100%" viewBox="0 0 680 200" id="fsvg">
-    <defs>
-      <marker id="am" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-        <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </marker>
-    </defs>
-    <g class="node-g" id="fn0" onclick="fsel(0)"><rect id="fr0" x="16" y="28" width="114" height="56" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1.5"/><text x="73" y="50" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#0C447C">01</text><text x="73" y="66" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">Diseño y</text><text x="73" y="79" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">Desarrollo</text></g>
-    <g class="node-g" id="fn1" onclick="fsel(1)"><rect id="fr1" x="164" y="28" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="221" y="50" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">02</text><text x="221" y="66" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Compras y</text><text x="221" y="79" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Proveedores</text></g>
-    <g class="node-g" id="fn2" onclick="fsel(2)"><rect id="fr2" x="312" y="28" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="369" y="50" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">03</text><text x="369" y="66" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Fabricación</text><text x="369" y="79" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">y Ensamble</text></g>
-    <g class="node-g" id="fn3" onclick="fsel(3)"><rect id="fr3" x="460" y="28" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="517" y="50" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">04</text><text x="517" y="66" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Verificación</text><text x="517" y="79" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">y Validación</text></g>
-    <g class="node-g" id="fn4" onclick="fsel(4)"><rect id="fr4" x="460" y="116" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="517" y="138" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">05</text><text x="517" y="154" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Control</text><text x="517" y="167" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">de NC</text></g>
-    <g class="node-g" id="fn5" onclick="fsel(5)"><rect id="fr5" x="312" y="116" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="369" y="138" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">06</text><text x="369" y="154" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Instalación</text><text x="369" y="167" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">en Campo</text></g>
-    <g class="node-g" id="fn6" onclick="fsel(6)"><rect id="fr6" x="164" y="116" width="114" height="56" rx="10" fill="var(--gray-bg)" stroke="var(--border)" stroke-width="1"/><text x="221" y="138" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="var(--text2)">07</text><text x="221" y="154" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">Monitoreo</text><text x="221" y="167" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="var(--text)">y Análisis</text></g>
-    <g class="node-g" id="fn7" onclick="fsel(7)"><rect id="fr7" x="16" y="116" width="114" height="56" rx="10" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1.5"/><text x="73" y="138" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#27500A">08</text><text x="73" y="154" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#27500A">Logística</text><text x="73" y="167" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#27500A">Inversa</text></g>
-    <line id="fc01" class="conn-a sel" x1="130" y1="56" x2="164" y2="56" stroke="#185FA5" stroke-width="1.5" marker-end="url(#am)"/>
-    <line id="fc12" class="conn-a" x1="278" y1="56" x2="312" y2="56" stroke="#888780" stroke-width="1" marker-end="url(#am)"/>
-    <line id="fc23" class="conn-a" x1="426" y1="56" x2="460" y2="56" stroke="#888780" stroke-width="1" marker-end="url(#am)"/>
-    <path id="fc34" class="conn-a" fill="none" stroke="#888780" stroke-width="1" d="M574 84 Q600 100 574 116" marker-end="url(#am)"/>
-    <line id="fc45" class="conn-a" x1="460" y1="144" x2="426" y2="144" stroke="#888780" stroke-width="1" marker-end="url(#am)"/>
-    <line id="fc56" class="conn-a" x1="312" y1="144" x2="278" y2="144" stroke="#888780" stroke-width="1" marker-end="url(#am)"/>
-    <line id="fc67" class="conn-a" x1="164" y1="144" x2="130" y2="144" stroke="#888780" stroke-width="1" marker-end="url(#am)"/>
-    <path id="fc70" class="conn-a" fill="none" stroke="#3B6D11" stroke-width="1.5" stroke-dasharray="5 4" d="M73 172 Q73 192 340 192 Q608 192 608 56 Q608 8 574 8 Q200 8 73 8 Q16 8 16 28" marker-end="url(#am)"/>
-    <text x="340" y="187" text-anchor="middle" font-size="10" fill="#3B6D11" opacity=".8">mejora continua</text>
-  </svg>
-</div>
+    <div class="sec-header fade-up">
+      <div class="sec-tag">Procesos Operativos</div>
+      <h2 class="sec-title">Flujo de cadena de valor</h2>
+      <p class="sec-desc">Hacé clic en cualquier nodo para ver los documentos y registros vinculados. Usá ← → para navegar.</p>
+    </div>
 
-<div class="step-dots2" id="fdots"></div>
-<div id="fdetail" style="margin-top:12px"></div>
-<div class="nav2">
-  <button class="nb" id="fprev" onclick="fnav(-1)" disabled>← Anterior</button>
-  <span style="font-size:12px;color:var(--text2)" id="fsteplbl">Paso 1 de 8</span>
-  <button class="nb" id="fnext" onclick="fnav(1)">Siguiente →</button>
-</div>
+    <div class="glass" style="padding:20px;margin-bottom:16px">
+      <div id="flow-svg-wrap"></div>
+    </div>
 
-<script>
-(function(){
-const R="05_REGISTROS/",P="02_PROCEDIMIENTOS/",F="04_FORMULARIOS_VACIOS/",M="03_MATRICES_AMBIENTALES_SST/";
-const ST=[
-  {n:"01",t:"Diseño y Desarrollo",nm:"ISO 9001",c:"#185FA5",bg:"#E6F1FB",tc:"#0C447C",
-   d:"Diseño mecánico, óptico y electrónico. 6 versiones aprobadas V0.8→V1.3. Cálculos de FOV (150mm), resistencia al viento (Cd=0.6) y térmica (T°<40°C).",
-   r:"V1.3 · precisión IA 94.2%",
-   docs:[{l:"SGI-P-03 Procedimiento",u:P+"SGI-P-03_Diseno_Desarrollo.docx",t:"9001"},{l:"HIST V0.8→V1.3",u:R+"Diseño_Desarrollo/SGI-F-12-REG-HIST-Modificaciones_V08_V13.docx",t:"ok"}]},
-  {n:"02",t:"Compras y Proveedores",nm:"ISO 9001",c:"#5F5E5A",bg:"var(--gray-bg)",tc:"var(--text)",
-   d:"4 proveedores evaluados. Microelectrónica Córdoba 93 pts · Motoma 87 pts · Filamentos3D 81 pts · Insumos Agro 72 pts (condicional).",
-   r:"7 lotes · 4 proveedores aprobados",
-   docs:[{l:"SGI-P-04 Procedimiento",u:P+"SGI-P-04_Compras_Evaluacion_Proveedores.docx",t:"9001"},{l:"BOM Lotes Abr-May 2026",u:R+"F-11_BOM_Compras/SGI-F-11-REG-BOM-Lotes_Compra_Abril_Mayo2026.docx",t:"ok"}]},
-  {n:"03",t:"Fabricación y Ensamble",nm:"ISO 9001",c:"#5F5E5A",bg:"var(--gray-bg)",tc:"var(--text)",
-   d:"Impresión 3D ASA/PETG, tolerancia ±0.2mm. Ensamble electrónico, etiquetado QR. 4 unidades fabricadas con trazabilidad completa.",
-   r:"4 unidades · USD 54 costo final",
-   docs:[{l:"SGI-P-05 Procedimiento",u:P+"SGI-P-05_Fabricacion_Ensamble.docx",t:"9001"},{l:"Planilla Trazabilidad Mayo",u:R+"F-06_Trazabilidad/SGI-F-06-REG-TRAZ-Planilla_Mayo2026.docx",t:"ok"},{l:"Checklist Liberación",u:F+"SGI-F-22_Checklist_Liberacion_Producto.docx",t:"9001"}]},
-  {n:"04",t:"Verificación y Validación",nm:"ISO 9001",c:"#5F5E5A",bg:"var(--gray-bg)",tc:"var(--text)",
-   d:"Prueba IP65 en 3 unidades: lluvia simulada 10 min, todas aprobadas. Validación IA: 50 muestras reales, 94.2% de precisión, producto liberado.",
-   r:"IP65 ✓ · IA 94.2% · Liberado",
-   docs:[{l:"Reporte IP65 — 3 unidades ✓",u:R+"F-17_IP65/SGI-F-17-REG-IP65-SYK-202605-001-Tres_Unidades.docx",t:"ok"},{l:"Validación IA 94.2% ✓",u:R+"F-16_Validacion/SGI-F-16-REG-VAL-SYK-202605-001-Precision_IA.docx",t:"ok"}]},
-  {n:"05",t:"Control de NC",nm:"ISO 9001/14001/45001",c:"#854F0B",bg:"#FAEEDA",tc:"#412402",
-   d:"2 NCs detectadas y cerradas en plazo. NC-003: deformación techo ASA. NC-007: falsos positivos IA por ángulo del cono. Metodología 5 Porqués.",
-   r:"NC-003 cerrada 16/05 · NC-007 cerrada 22/05",
-   docs:[{l:"SGI-P-06 Procedimiento",u:P+"SGI-P-06_Control_No_Conformidades.docx",t:"9001"},{l:"NC-003 Deformación ASA ✓",u:R+"F-01_No_Conformidades/SGI-F-01-REG-NC-SYK-202605-003-Deformacion_ASA.docx",t:"ok"},{l:"NC-007 Falsos positivos IA ✓",u:R+"F-01_No_Conformidades/SGI-F-01-REG-NC-SYK-202605-007-Falsos_Positivos_IA.docx",t:"ok"}]},
-  {n:"06",t:"Instalación en Campo",nm:"ISO 9001/14001",c:"#5F5E5A",bg:"var(--gray-bg)",tc:"var(--text)",
-   d:"3 unidades instaladas en Villa María. Capacitación obligatoria: 5 participantes, todos aprobados. Encuesta post-instalación: 4.7/5 de satisfacción.",
-   r:"3 unidades en campo · 4.7/5 satisfacción",
-   docs:[{l:"Ficha de Instalación Campo",u:F+"SGI-F-18_Ficha_Instalacion_Campo.docx",t:"9001"},{l:"CAP 08/05 — 5/5 aprobados ✓",u:R+"F-05_Capacitaciones/SGI-F-05-REG-CAP-Instalacion_Segura-08052026.docx",t:"ok"},{l:"Encuesta R. Sánchez 4.7/5 ✓",u:R+"F-07_Encuestas/SGI-F-07-REG-ENC-Roberto_Sanchez-Mayo2026.docx",t:"ok"}]},
-  {n:"07",t:"Monitoreo y Análisis",nm:"ISO 9001/14001/45001",c:"#5F5E5A",bg:"var(--gray-bg)",tc:"var(--text)",
-   d:"Seguimiento semanal de plagas por lote. KPIs: IA 94.2%, autonomía 92 días, costo USD 54. 191 insectos contados, 2 alertas enviadas.",
-   r:"191 insectos · 2 alertas · KPIs ✓",
-   docs:[{l:"KPIs Abril-Mayo 2026 ✓",u:R+"F-09_KPIs/SGI-F-09-REG-KPI-Seguimiento_Abril_Mayo2026.docx",t:"ok"},{l:"Conteo Plagas R. Sánchez ✓",u:R+"F-19_Conteo_Plagas/SGI-F-19-REG-Conteo_Plagas_RobertoSanchez_Mayo2026.docx",t:"ok"},{l:"Informe Mensual Mayo ✓",u:R+"F-23_Informe/SGI-F-23-REG-Informe_Mensual_Mayo2026.docx",t:"ok"}]},
-  {n:"08",t:"Logística Inversa",nm:"ISO 14001",c:"#3B6D11",bg:"#EAF3DE",tc:"#173404",
-   d:"87.5% de baterías recuperadas (meta ≥80%). Convenio con planta RAEE en Córdoba. Reducción 41% en agroquímicos. 3 productores participaron.",
-   r:"87.5% baterías · 41% menos agroquím.",
-   docs:[{l:"Plan Logística Inversa (LOG-08)",u:M+"SGI-LOG-08_Plan_Logistica_Inversa.docx",t:"14001"},{l:"Registro LOG Mayo 2026 ✓",u:R+"F-08_Logistica_Inversa/SGI-F-08-REG-LOG-Logistica_Inversa-Mayo2026.docx",t:"ok"},{l:"Reducción Agroquímicos 41% ✓",u:R+"F-20_Agroquimicos/SGI-F-20-REG-Reduccion_Agroquimicos_Mayo2026.docx",t:"ok"}]},
-];
-let cur=0;
-const th=t=>{if(t==="ok")return'<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:#EAF3DE;color:#27500A;font-weight:500;flex-shrink:0">REG ✓</span>';if(t==="9001")return'<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:#E6F1FB;color:#0C447C;font-weight:500;flex-shrink:0">9001</span>';if(t==="14001")return'<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:#EAF3DE;color:#27500A;font-weight:500;flex-shrink:0">14001</span>';return "";};
-const dc=document.getElementById("fdots");
-dc.innerHTML=ST.map((_,i)=>`<div class="dot2${i===0?" on":""}" id="fd${i}" onclick="window._fsel(${i})"></div>`).join("");
-function render(i){
-  cur=i;const s=ST[i];
-  ST.forEach((_,j)=>{
-    const r=document.getElementById("fr"+j);
-    if(j===i){r.style.fill=s.bg;r.style.stroke=s.c;r.style.strokeWidth="2";}
-    else{r.style.fill="";r.style.stroke="";r.style.strokeWidth="";}
-    const d=document.getElementById("fd"+j);if(d)d.className="dot2"+(j===i?" on":"");
-  });
-  ["fc01","fc12","fc23","fc34","fc45","fc56","fc67","fc70"].forEach((id,idx)=>{
-    const el=document.getElementById(id);if(!el)return;
-    el.classList.toggle("sel",idx===i||(i===7&&idx===7));
-  });
-  document.getElementById("fsteplbl").textContent=`Paso ${i+1} de 8`;
-  document.getElementById("fprev").disabled=i===0;
-  document.getElementById("fnext").disabled=i===7;
-  document.getElementById("fdetail").innerHTML=`
-    <div class="dt-card">
-      <div class="dt-hd">
-        <div class="dt-icon" style="background:${s.bg}"><span style="font-size:16px;font-weight:500;color:${s.c}">${s.n}</span></div>
-        <div style="flex:1"><div style="font-size:15px;font-weight:500">${s.t}</div><div style="font-size:12px;color:var(--text2);margin-top:2px">${s.nm}</div></div>
-        <div style="text-align:right"><div style="font-size:11px;color:var(--text2)">Resultado Mayo 2026</div><div style="font-size:12px;font-weight:500;color:${s.c};margin-top:2px">${s.r}</div></div>
-      </div>
-      <div style="padding:12px 18px;font-size:13px;color:var(--text2);line-height:1.6;border-bottom:0.5px solid var(--border)">${s.d}</div>
-      <div class="dt-docs">${s.docs.map(d=>`<a class="dlink" href="${d.u}"><i class="ti ti-file-text" style="font-size:14px;color:var(--text2)"></i><span class="dlink-lbl">${d.l}</span>${th(d.t)}</a>`).join("")}</div>
-    </div>`;
-}
-window._fsel=render;
-window.fsel=render;
-window.fnav=(dir)=>{const n=cur+dir;if(n>=0&&n<8)render(n);};
-render(0);
-})();
-</script>
-</div>
+    <div class="step-dots" id="flow-dots"></div>
+
+    <div id="flow-detail" class="detail-panel" style="margin:16px 0"></div>
+
+    <div class="nav-arrows">
+      <button class="nav-arrow" id="flow-prev" onclick="FlowModule.navigate(-1)" disabled>← Anterior</button>
+      <span style="font-size:12px;color:var(--text3)" id="flow-lbl">Paso 1 de 8</span>
+      <button class="nav-arrow" id="flow-next" onclick="FlowModule.navigate(1)">Siguiente →</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
 <!-- DOCUMENTOS -->
-<div id="s-documentos" class="section">
-  <div class="filter-row">
-    <button class="filter-btn active" onclick="filterDocs('all',this)">Todos (50)</button>
-    <button class="filter-btn" onclick="filterDocs('est',this)">Estratégicos (7)</button>
-    <button class="filter-btn" onclick="filterDocs('proc',this)">Procedimientos (13)</button>
-    <button class="filter-btn" onclick="filterDocs('mat',this)">Matrices (3)</button>
-    <button class="filter-btn" onclick="filterDocs('form',this)">Formularios (27)</button>
-  </div>
-  <div class="docs-grid" id="docs-grid"></div>
-</div>
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="sec-documentos" class="section">
+  <div class="container">
 
+    <div class="sec-header fade-up">
+      <div class="sec-tag">Documentos SGI</div>
+      <h2 class="sec-title">Portfolio de documentos</h2>
+      <p class="sec-desc">Pasá el cursor sobre cualquier tarjeta para el efecto 3D tilt. Filtrá por categoría.</p>
+    </div>
+
+    <div class="filter-row" id="portfolio-filters"></div>
+    <div class="portfolio-grid" id="portfolio-grid"></div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TIMELINE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="sec-timeline" class="section">
+  <div class="container">
+
+    <div class="sec-header fade-up">
+      <div class="sec-tag">Hitos del Proyecto</div>
+      <h2 class="sec-title">Timeline de desarrollo</h2>
+      <p class="sec-desc">Marzo → Mayo 2026 · Desplazá horizontalmente para ver todos los hitos.</p>
+    </div>
+
+    <div class="timeline-scroll glass" style="padding:0 20px">
+      <div class="timeline-track" id="timeline-track"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
 <!-- REGISTROS -->
-<div id="s-registros" class="section">
-  <div class="card">
-    <div class="section-hd">Registros con datos reales — Mayo 2026</div>
-    <table>
-      <thead>
-        <tr>
-          <th>Registro</th>
-          <th>Código</th>
-          <th>Fecha</th>
-          <th>Resultado clave</th>
-          <th>Estado</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="reg-tbody"></tbody>
-    </table>
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="sec-registros" class="section">
+  <div class="container">
+
+    <div class="sec-header fade-up">
+      <div class="sec-tag">Registros SGI</div>
+      <h2 class="sec-title">Registros con datos reales</h2>
+      <p class="sec-desc">21 registros completados con datos de campo — mayo 2026.</p>
+    </div>
+
+    <div class="glass" style="overflow:hidden">
+      <table class="reg-table">
+        <thead>
+          <tr>
+            <th>Registro</th>
+            <th>Código</th>
+            <th>Fecha</th>
+            <th>Resultado</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="reg-tbody"></tbody>
+      </table>
+    </div>
+
   </div>
-</div>
+</section>
 
-<!-- ESTRUCTURA -->
-<div id="s-estructura" class="section">
-  <div class="three-col">
-    <div class="card">
-      <div style="font-size:13px;font-weight:500;margin-bottom:4px"><i class="ti ti-folder" style="color:var(--blue);margin-right:6px"></i>01_DOCUMENTOS_ESTRATEGICOS</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">7 archivos</div>
-      <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text2)">
-        <span>SGI-MAN-01 Manual del SGI</span>
-        <span>SGI-ALC-02 Alcance</span>
-        <span>SGI-POL-03 Política Integrada</span>
-        <span>SGI-MP-04 Mapa de Procesos</span>
-        <span>SGI-PAR-05 Partes Interesadas</span>
-        <span>SGI-RIE-06 Riesgos</span>
-        <span>SGI-OBJ-07 Objetivos + KPIs</span>
-      </div>
-    </div>
-    <div class="card">
-      <div style="font-size:13px;font-weight:500;margin-bottom:4px"><i class="ti ti-folder" style="color:var(--green);margin-right:6px"></i>02_PROCEDIMIENTOS</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">13 archivos</div>
-      <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text2)">
-        <span>SGI-P-02 Control Documentos</span>
-        <span>SGI-P-03 Diseño y Desarrollo</span>
-        <span>SGI-P-04 Compras</span>
-        <span>SGI-P-05 Fabricación</span>
-        <span>SGI-P-06 No Conformidades</span>
-        <span>SGI-P-09 Emergencias</span>
-        <span>SGI-P-10 Auditoría Interna</span>
-        <span>SGI-P-11 Revisión Dirección</span>
-        <span>SGI-P-12 Capacitación</span>
-        <span>SGI-P-13 Comunicación</span>
-        <span>SGI-LM-12 Lista Maestra</span>
-        <span>SGI-PA-10 Prog. Auditorías</span>
-        <span>SGI-RT-06 Trazabilidad</span>
-      </div>
-    </div>
-    <div class="card">
-      <div style="font-size:13px;font-weight:500;margin-bottom:4px"><i class="ti ti-folder" style="color:var(--amber);margin-right:6px"></i>03_MATRICES_AMBIENTALES_SST</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">3 archivos</div>
-      <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text2)">
-        <span>SGI-MA-07 Aspectos Ambientales</span>
-        <span>SGI-MP-08 Peligros y Riesgos SST</span>
-        <span>SGI-LOG-08 Plan Logística Inversa</span>
-      </div>
-    </div>
-  </div>
-  <div class="two-col">
-    <div class="card">
-      <div style="font-size:13px;font-weight:500;margin-bottom:4px"><i class="ti ti-folder" style="color:var(--blue);margin-right:6px"></i>04_FORMULARIOS_VACIOS</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">27 plantillas (SGI-F-01 a F-27 + SGI-IA-10)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;font-size:12px;color:var(--text2)">
-        <span>F-01 No Conformidad</span><span>F-15 Requisitos Legales</span>
-        <span>F-02 Emergencia</span><span>F-16 Validación IA</span>
-        <span>F-03 Acta Revisión</span><span>F-17 Prueba IP65</span>
-        <span>F-04 Checklist Auditoría</span><span>F-18 Ficha Instalación</span>
-        <span>F-05 Capacitación</span><span>F-19 Conteo Plagas</span>
-        <span>F-06 Trazabilidad</span><span>F-20 Reducción Agroquím.</span>
-        <span>F-07 Encuesta</span><span>F-21 Autonomía Solar</span>
-        <span>F-08 Logística Inversa</span><span>F-22 Checklist Liberación</span>
-        <span>F-09 KPIs</span><span>F-23 Informe Mensual</span>
-        <span>F-10 Mantenimiento</span><span>F-24 Análisis ROI</span>
-        <span>F-11 BOM / Compras</span><span>F-25 Huella Ambiental</span>
-        <span>F-12 Historial Cambios</span><span>F-26 Feedback Técnico</span>
-        <span>F-13 Plan Capacitación</span><span>F-27 Mapa de Calor</span>
-        <span>F-14 Evaluación Comp.</span><span>IA-10 Inf. Auditoría</span>
-      </div>
-    </div>
-    <div class="card">
-      <div style="font-size:13px;font-weight:500;margin-bottom:4px"><i class="ti ti-folder" style="color:var(--green);margin-right:6px"></i>05_REGISTROS</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">21 registros con datos reales — organizados en subcarpetas</div>
-      <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
-        <span style="color:var(--green)">F-01_No_Conformidades/ → NC-003, NC-007</span>
-        <span style="color:var(--text2)">F-02_Emergencias/ → EM-001</span>
-        <span style="color:var(--green)">F-03_Actas_Revision/ → REV-DIR-2026-01</span>
-        <span style="color:var(--green)">F-04_Auditorias/ → AUD-SYK-2026-01</span>
-        <span style="color:var(--text2)">F-05_Capacitaciones/ → CAP 08/05/2026</span>
-        <span style="color:var(--text2)">F-06_Trazabilidad/ → Planilla Mayo 2026</span>
-        <span style="color:var(--text2)">F-07_Encuestas/ → ENC Roberto Sánchez</span>
-        <span style="color:var(--green)">F-08_Logistica_Inversa/ → LOG Mayo 2026</span>
-        <span style="color:var(--green)">F-09_KPIs/ → KPI Abr-May 2026</span>
-        <span style="color:var(--text2)">F-10_Mantenimiento/ → MANT SYK-001</span>
-        <span style="color:var(--text2)">F-11_BOM_Compras/ → BOM Abr-May 2026</span>
-        <span style="color:var(--text2)">Diseño_Desarrollo/ → HIST V0.8→V1.3</span>
-        <span style="color:var(--text2)">Comunicacion/ → COM Mayo 2026</span>
-        <span style="color:var(--text2)">+ 8 subcarpetas nuevas (F-13, F-15-F-20, F-23)</span>
-      </div>
-    </div>
-  </div>
-</div>
+</div><!-- #app -->
 
-</main>
+<!-- KPI MODAL -->
+<div class="modal-overlay" id="kpi-modal"></div>
 
-<footer>
-  © 2026 Synkro Argentina &nbsp;·&nbsp; D'Orazio Dayana &nbsp;·&nbsp; Luján Luciano &nbsp;·&nbsp;
-  Instituto Superior Politécnico Córdoba &nbsp;·&nbsp; Ciclo Lectivo 2026
-</footer>
+<!-- RADIAL MENU -->
+<div id="radial-menu"></div>
 
-<script>
-const BASE="./";
-const E="01_DOCUMENTOS_ESTRATEGICOS/",P="02_PROCEDIMIENTOS/",
-      M="03_MATRICES_AMBIENTALES_SST/",F="04_FORMULARIOS_VACIOS/",
-      R="05_REGISTROS/";
+<!-- SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="js/data.js"></script>
+<script src="js/particles.js"></script>
+<script src="js/kpi.js"></script>
+<script src="js/flow.js"></script>
+<script src="js/components.js"></script>
+<script src="js/app.js"></script>
 
-const stepData=[
-  {title:"1. Diseño y Desarrollo",desc:"Diseño mecánico, óptico y electrónico. Historial V0.8→V1.3. Cálculos FOV, estructura y térmica. Versión actual: V1.3.",docs:[
-    {label:"SGI-P-03 Procedimiento",url:P+"SGI-P-03_Diseno_Desarrollo.docx",tag:"9001"},
-    {label:"HIST Modificaciones V0.8→V1.3",url:R+"Diseño_Desarrollo/SGI-F-12-REG-HIST-Modificaciones_V08_V13.docx",tag:"ok"},
-  ]},
-  {title:"2. Compras y Proveedores",desc:"4 proveedores evaluados. PROV-001 Microelectrónica Córdoba 93 pts · PROV-002 Filamentos3D 81 pts · PROV-003 Motoma 87 pts · PROV-004 Insumos Agro 72 pts (condicional).",docs:[
-    {label:"SGI-P-04 Procedimiento",url:P+"SGI-P-04_Compras_Evaluacion_Proveedores.docx",tag:"9001"},
-    {label:"BOM Lotes Abr-May 2026",url:R+"F-11_BOM_Compras/SGI-F-11-REG-BOM-Lotes_Compra_Abril_Mayo2026.docx",tag:"ok"},
-  ]},
-  {title:"3. Fabricación y Ensamble",desc:"Impresión 3D ASA/PETG, tolerancia ±0.2mm. Ensamble electrónico. 4 unidades fabricadas y etiquetadas con QR para trazabilidad.",docs:[
-    {label:"SGI-P-05 Procedimiento",url:P+"SGI-P-05_Fabricacion_Ensamble.docx",tag:"9001"},
-    {label:"Planilla Trazabilidad Mayo",url:R+"F-06_Trazabilidad/SGI-F-06-REG-TRAZ-Planilla_Mayo2026.docx",tag:"ok"},
-    {label:"Checklist Liberación Producto",url:F+"SGI-F-22_Checklist_Liberacion_Producto.docx",tag:"9001"},
-  ]},
-  {title:"4. Verificación y Validación",desc:"Prueba IP65 en 3 unidades (10 min lluvia simulada — APROBADAS). Validación IA: 94.2% de precisión sobre 50 muestras.",docs:[
-    {label:"Reporte IP65 — 3 unidades ✓",url:R+"F-17_IP65/SGI-F-17-REG-IP65-SYK-202605-001-Tres_Unidades.docx",tag:"ok"},
-    {label:"Validación IA — 94.2% ✓",url:R+"F-16_Validacion/SGI-F-16-REG-VAL-SYK-202605-001-Precision_IA.docx",tag:"ok"},
-  ]},
-  {title:"5. Control de No Conformidades",desc:"2 NCs detectadas y cerradas en plazo. Metodología 5 Porqués. Acciones correctivas y preventivas documentadas.",docs:[
-    {label:"SGI-P-06 Procedimiento",url:P+"SGI-P-06_Control_No_Conformidades.docx",tag:"9001"},
-    {label:"NC-003 Deformación ASA ✓",url:R+"F-01_No_Conformidades/SGI-F-01-REG-NC-SYK-202605-003-Deformacion_ASA.docx",tag:"ok"},
-    {label:"NC-007 Falsos positivos IA ✓",url:R+"F-01_No_Conformidades/SGI-F-01-REG-NC-SYK-202605-007-Falsos_Positivos_IA.docx",tag:"ok"},
-  ]},
-  {title:"6. Instalación en Campo",desc:"3 unidades instaladas en productores de Villa María, Córdoba. Capacitación obligatoria antes de cada instalación. Ficha de instalación con GPS.",docs:[
-    {label:"Ficha de Instalación en Campo",url:F+"SGI-F-18_Ficha_Instalacion_Campo.docx",tag:"9001"},
-    {label:"CAP 08/05 — 5/5 aprobados ✓",url:R+"F-05_Capacitaciones/SGI-F-05-REG-CAP-Instalacion_Segura-08052026.docx",tag:"ok"},
-    {label:"Encuesta R. Sánchez — 4.7/5 ✓",url:R+"F-07_Encuestas/SGI-F-07-REG-ENC-Roberto_Sanchez-Mayo2026.docx",tag:"ok"},
-  ]},
-  {title:"7. Monitoreo y Análisis",desc:"Seguimiento semanal de plagas por lote. KPIs trimestrales. Informe mensual consolidado. Alertas automáticas al productor cuando se supera el umbral.",docs:[
-    {label:"KPIs Abril-Mayo 2026 ✓",url:R+"F-09_KPIs/SGI-F-09-REG-KPI-Seguimiento_Abril_Mayo2026.docx",tag:"ok"},
-    {label:"Conteo Plagas R. Sánchez ✓",url:R+"F-19_Conteo_Plagas/SGI-F-19-REG-Conteo_Plagas_RobertoSanchez_Mayo2026.docx",tag:"ok"},
-    {label:"Informe Mensual Mayo ✓",url:R+"F-23_Informe/SGI-F-23-REG-Informe_Mensual_Mayo2026.docx",tag:"ok"},
-  ]},
-  {title:"8. Logística Inversa — 87.5% ✓",desc:"87.5% de baterías 18650 recuperadas (meta ≥80%). Convenio con planta RAEE autorizada en Córdoba. Certificados emitidos. Ley 24.051 cumplida.",docs:[
-    {label:"Plan Logística Inversa (LOG-08)",url:M+"SGI-LOG-08_Plan_Logistica_Inversa.docx",tag:"14001"},
-    {label:"Registro LOG Mayo 2026 ✓",url:R+"F-08_Logistica_Inversa/SGI-F-08-REG-LOG-Logistica_Inversa-Mayo2026.docx",tag:"ok"},
-    {label:"Reporte Reducción Agroquímicos ✓",url:R+"F-20_Agroquimicos/SGI-F-20-REG-Reduccion_Agroquimicos_Mayo2026.docx",tag:"ok"},
-  ]},
-];
-
-const apoyoData=[
-  {icon:"ti-file-text",title:"Control de documentos",docs:[{label:"SGI-P-02",url:P+"SGI-P-02_Control_Documentos_Registros.docx"},{label:"Lista Maestra",url:P+"SGI-LM-12_Lista_Maestra_Documentos.docx"}]},
-  {icon:"ti-leaf",title:"Gestión Ambiental",docs:[{label:"Aspectos MA-07",url:M+"SGI-MA-07_Aspectos_Impactos_Ambientales.docx"}]},
-  {icon:"ti-shield-check",title:"Seguridad y Salud",docs:[{label:"Peligros MP-08",url:M+"SGI-MP-08_Peligros_Riesgos_SST.docx"},{label:"Emergencias P-09",url:P+"SGI-P-09_Preparacion_Respuesta_Emergencias.docx"}]},
-  {icon:"ti-clipboard-list",title:"Auditoría Interna",docs:[{label:"SGI-P-10",url:P+"SGI-P-10_Auditoria_Interna.docx"},{label:"Programa PA-10",url:P+"SGI-PA-10_Programa_Anual_Auditorias.docx"}]},
-  {icon:"ti-users",title:"Capacitación",docs:[{label:"SGI-P-12",url:P+"SGI-P-12_Capacitacion_Competencia.docx"},{label:"Plan Anual F-13",url:R+"F-13_Capacitacion/SGI-F-13-REG-Plan_Capacitacion_2026.docx"}]},
-  {icon:"ti-messages",title:"Comunicación",docs:[{label:"SGI-P-13",url:P+"SGI-P-13_Comunicacion_Interna_Externa.docx"},{label:"COM Mayo 2026",url:R+"Comunicacion/SGI-P-13-REG-COM-Comunicaciones_Mayo2026.docx"}]},
-  {icon:"ti-scan",title:"Trazabilidad",docs:[{label:"SGI-RT-06",url:P+"SGI-RT-06_Trazabilidad_Productos.docx"}]},
-  {icon:"ti-checkup-list",title:"Revisión Dirección",docs:[{label:"SGI-P-11",url:P+"SGI-P-11_Revision_Direccion.docx"},{label:"REV-DIR-2026-01",url:R+"F-03_Actas_Revision/SGI-F-03-REG-REV-DIR-2026-01-Primera_Revision.docx"}]},
-];
-
-const allDocs=[
-  {label:"Manual del SGI",url:E+"SGI-MAN-01_Manual_SGI.docx",cat:"est",tag:"9001"},
-  {label:"Alcance del SGI",url:E+"SGI-ALC-02_Alcance_SGI.docx",cat:"est",tag:"9001"},
-  {label:"Política Integrada",url:E+"SGI-POL-03_Politica_Integrada.docx",cat:"est",tag:"9001"},
-  {label:"Mapa de Procesos",url:E+"SGI-MP-04_Mapa_de_Procesos.docx",cat:"est",tag:"9001"},
-  {label:"Partes Interesadas",url:E+"SGI-PAR-05_Partes_Interesadas.docx",cat:"est",tag:"9001"},
-  {label:"Riesgos y Oportunidades",url:E+"SGI-RIE-06_Riesgos_Oportunidades.docx",cat:"est",tag:"9001"},
-  {label:"Objetivos + KPIs",url:E+"SGI-OBJ-07_Objetivos_KPIs.docx",cat:"est",tag:"9001"},
-  {label:"P-02 Control Documentos",url:P+"SGI-P-02_Control_Documentos_Registros.docx",cat:"proc",tag:"9001"},
-  {label:"P-03 Diseño y Desarrollo",url:P+"SGI-P-03_Diseno_Desarrollo.docx",cat:"proc",tag:"9001"},
-  {label:"P-04 Compras",url:P+"SGI-P-04_Compras_Evaluacion_Proveedores.docx",cat:"proc",tag:"9001"},
-  {label:"P-05 Fabricación",url:P+"SGI-P-05_Fabricacion_Ensamble.docx",cat:"proc",tag:"9001"},
-  {label:"P-06 No Conformidades",url:P+"SGI-P-06_Control_No_Conformidades.docx",cat:"proc",tag:"9001"},
-  {label:"P-09 Emergencias",url:P+"SGI-P-09_Preparacion_Respuesta_Emergencias.docx",cat:"proc",tag:"45001"},
-  {label:"P-10 Auditoría Interna",url:P+"SGI-P-10_Auditoria_Interna.docx",cat:"proc",tag:"9001"},
-  {label:"P-11 Revisión Dirección",url:P+"SGI-P-11_Revision_Direccion.docx",cat:"proc",tag:"9001"},
-  {label:"P-12 Capacitación",url:P+"SGI-P-12_Capacitacion_Competencia.docx",cat:"proc",tag:"45001"},
-  {label:"P-13 Comunicación",url:P+"SGI-P-13_Comunicacion_Interna_Externa.docx",cat:"proc",tag:"9001"},
-  {label:"Lista Maestra LM-12",url:P+"SGI-LM-12_Lista_Maestra_Documentos.docx",cat:"proc",tag:"9001"},
-  {label:"Programa Auditorías PA-10",url:P+"SGI-PA-10_Programa_Anual_Auditorias.docx",cat:"proc",tag:"9001"},
-  {label:"Trazabilidad RT-06",url:P+"SGI-RT-06_Trazabilidad_Productos.docx",cat:"proc",tag:"9001"},
-  {label:"Aspectos Ambientales MA-07",url:M+"SGI-MA-07_Aspectos_Impactos_Ambientales.docx",cat:"mat",tag:"14001"},
-  {label:"Peligros y Riesgos MP-08",url:M+"SGI-MP-08_Peligros_Riesgos_SST.docx",cat:"mat",tag:"45001"},
-  {label:"Plan Logística Inversa LOG-08",url:M+"SGI-LOG-08_Plan_Logistica_Inversa.docx",cat:"mat",tag:"14001"},
-  {label:"F-01 No Conformidad",url:F+"SGI-F-01_No_Conformidad.docx",cat:"form",tag:"9001"},
-  {label:"F-02 Emergencia",url:F+"SGI-F-02_Emergencia_Incidente.docx",cat:"form",tag:"45001"},
-  {label:"F-03 Acta Revisión",url:F+"SGI-F-03_Acta_Revision_Direccion.docx",cat:"form",tag:"9001"},
-  {label:"F-04 Checklist Auditoría",url:F+"SGI-F-04_Checklist_Auditoria.docx",cat:"form",tag:"9001"},
-  {label:"F-05 Registro Capacitación",url:F+"SGI-F-05_Registro_Capacitacion.docx",cat:"form",tag:"45001"},
-  {label:"F-09 Planilla KPIs",url:F+"SGI-F-09_Planilla_KPIs.docx",cat:"form",tag:"9001"},
-  {label:"F-16 Validación IA",url:F+"SGI-F-16_Validacion_Campo_Precision_IA.docx",cat:"form",tag:"9001"},
-  {label:"F-17 Prueba IP65",url:F+"SGI-F-17_Prueba_Estanqueidad_IP65.docx",cat:"form",tag:"9001"},
-  {label:"F-18 Ficha Instalación",url:F+"SGI-F-18_Ficha_Instalacion_Campo.docx",cat:"form",tag:"9001"},
-  {label:"F-19 Conteo Plagas",url:F+"SGI-F-19_Conteo_Plagas_por_Lote.docx",cat:"form",tag:"9001"},
-  {label:"F-22 Checklist Liberación",url:F+"SGI-F-22_Checklist_Liberacion_Producto.docx",cat:"form",tag:"9001"},
-  {label:"F-23 Informe Mensual",url:F+"SGI-F-23_Informe_Mensual_Desempeno.docx",cat:"form",tag:"9001"},
-  {label:"F-27 Dashboard Mapa Calor",url:F+"SGI-F-27_Dashboard_Mapa_de_Calor.docx",cat:"form",tag:"9001"},
-];
-
-const regData=[
-  {label:"NC-003 — Deformación techo ASA",url:R+"F-01_No_Conformidades/SGI-F-01-REG-NC-SYK-202605-003-Deformacion_ASA.docx",cod:"NC-003",fecha:"12/05/2026",resultado:"Perfil impresión corregido — cono 35°",ok:true},
-  {label:"NC-007 — Falsos positivos IA",url:R+"F-01_No_Conformidades/SGI-F-01-REG-NC-SYK-202605-007-Falsos_Positivos_IA.docx",cod:"NC-007",fecha:"18/05/2026",resultado:"Cono anti-reflejo rediseñado",ok:true},
-  {label:"EM-001 — Exposición feromonas leve",url:R+"F-02_Emergencias/SGI-F-02-REG-EM-SYK-202605-001-Exposicion_Feromonas.docx",cod:"EM-001",fecha:"20/05/2026",resultado:"EPP actualizado — instructivo revisado",ok:true},
-  {label:"REV-DIR-2026-01 — Primera Revisión",url:R+"F-03_Actas_Revision/SGI-F-03-REG-REV-DIR-2026-01-Primera_Revision.docx",cod:"REV-DIR-01",fecha:"25/05/2026",resultado:"Estado SATISFACTORIO — 96% cumplimiento",ok:true},
-  {label:"AUD-SYK-2026-01 — Auditoría interna",url:R+"F-04_Auditorias/SGI-F-04-REG-AUD-SYK-2026-01-Checklist_Mayo2026.docx",cod:"AUD-01",fecha:"20/05/2026",resultado:"96% cumplimiento — 0 NC mayores",ok:true},
-  {label:"CAP — Instalación Segura 08/05",url:R+"F-05_Capacitaciones/SGI-F-05-REG-CAP-Instalacion_Segura-08052026.docx",cod:"CAP-01",fecha:"08/05/2026",resultado:"5/5 participantes aprobados",ok:true},
-  {label:"TRAZ — Planilla Mayo 2026",url:R+"F-06_Trazabilidad/SGI-F-06-REG-TRAZ-Planilla_Mayo2026.docx",cod:"TRAZ-05",fecha:"Mayo 2026",resultado:"4 unidades con trazabilidad completa",ok:true},
-  {label:"ENC — Roberto Sánchez 4.7/5",url:R+"F-07_Encuestas/SGI-F-07-REG-ENC-Roberto_Sanchez-Mayo2026.docx",cod:"ENC-01",fecha:"22/05/2026",resultado:"Satisfacción 4.7/5 — 41% reducción agroquím.",ok:true},
-  {label:"LOG — Logística Inversa Mayo",url:R+"F-08_Logistica_Inversa/SGI-F-08-REG-LOG-Logistica_Inversa-Mayo2026.docx",cod:"LOG-05",fecha:"Mayo 2026",resultado:"87.5% baterías recuperadas",ok:true},
-  {label:"KPI — Seguimiento Abr-May 2026",url:R+"F-09_KPIs/SGI-F-09-REG-KPI-Seguimiento_Abril_Mayo2026.docx",cod:"KPI-05",fecha:"Mayo 2026",resultado:"IA 94.2% · Costo USD 54 · 41% agroquím.",ok:true},
-  {label:"MANT — SYK-202604-001 R. Sánchez",url:R+"F-10_Mantenimiento/SGI-F-10-REG-MANT-SYK202604001-Roberto_Sanchez.docx",cod:"MANT-01",fecha:"Mayo 2026",resultado:"5 tareas OK — T° interna 37.8°C",ok:true},
-  {label:"BOM — Lotes Compra Abr-May",url:R+"F-11_BOM_Compras/SGI-F-11-REG-BOM-Lotes_Compra_Abril_Mayo2026.docx",cod:"BOM-05",fecha:"Abr-May 2026",resultado:"7 lotes — 4 proveedores aprobados",ok:true},
-  {label:"HIST — Modificaciones V0.8→V1.3",url:R+"Diseño_Desarrollo/SGI-F-12-REG-HIST-Modificaciones_V08_V13.docx",cod:"HIST-01",fecha:"Mar-May 2026",resultado:"6 versiones aprobadas",ok:true},
-  {label:"PLAN-CAP — Plan Capacitación 2026",url:R+"F-13_Capacitacion/SGI-F-13-REG-Plan_Capacitacion_2026.docx",cod:"PLAN-01",fecha:"Mayo 2026",resultado:"2 realizadas — 4 planificadas",ok:true},
-  {label:"LEG — Requisitos Legales Mayo",url:R+"F-15_Legales/SGI-F-15-REG-Requisitos_Legales_Mayo2026.docx",cod:"LEG-05",fecha:"Mayo 2026",resultado:"8 normas — 5 cumplidas, 3 en proceso",ok:true},
-  {label:"VAL-IA — Precisión 94.2%",url:R+"F-16_Validacion/SGI-F-16-REG-VAL-SYK-202605-001-Precision_IA.docx",cod:"VAL-01",fecha:"20/05/2026",resultado:"Producto LIBERADO — 50 muestras",ok:true},
-  {label:"IP65 — 3 unidades aprobadas",url:R+"F-17_IP65/SGI-F-17-REG-IP65-SYK-202605-001-Tres_Unidades.docx",cod:"IP65-01",fecha:"22/05/2026",resultado:"3/3 unidades aprobaron prueba lluvia 10 min",ok:true},
-  {label:"CONTEO — Plagas R. Sánchez Mayo",url:R+"F-19_Conteo_Plagas/SGI-F-19-REG-Conteo_Plagas_RobertoSanchez_Mayo2026.docx",cod:"CNT-01",fecha:"Mayo 2026",resultado:"191 insectos — 2 alertas enviadas",ok:true},
-  {label:"AGRO — Reducción 41% promedio",url:R+"F-20_Agroquimicos/SGI-F-20-REG-Reduccion_Agroquimicos_Mayo2026.docx",cod:"AGRO-05",fecha:"Mayo 2026",resultado:"41% promedio — 3/3 productores superaron meta",ok:true},
-  {label:"INF — Informe Mensual Mayo",url:R+"F-23_Informe/SGI-F-23-REG-Informe_Mensual_Mayo2026.docx",cod:"INF-05",fecha:"Mayo 2026",resultado:"Estado SATISFACTORIO",ok:true},
-  {label:"COM — Comunicaciones Mayo 2026",url:R+"Comunicacion/SGI-P-13-REG-COM-Comunicaciones_Mayo2026.docx",cod:"COM-05",fecha:"Mayo 2026",resultado:"5 tipos de comunicación registrados",ok:true},
-];
-
-function tagHTML(tag){
-  if(tag==="ok") return '<span class="tag tag-ok">REG ✓</span>';
-  if(tag==="9001") return '<span class="tag tag-9">9001</span>';
-  if(tag==="14001") return '<span class="tag tag-14">14001</span>';
-  if(tag==="45001") return '<span class="tag tag-45">45001</span>';
-  return '';
-}
-
-function buildFlow(){
-  const row=document.getElementById('flow-row');
-  stepData.forEach((s,i)=>{
-    if(i>0) row.innerHTML+=`<div class="arrow">→</div>`;
-    const div=document.createElement('div');
-    div.className='flow-step'+(i===0?' active':'');
-    div.id='fs'+i;
-    div.innerHTML=`<div class="flow-step-num">0${i+1}</div><div class="flow-step-title">${s.title.replace(/^\d+\. /,'')}</div><div class="flow-step-sub">${s.docs[0]?.label.split(' ')[0]||''}</div>`;
-    div.onclick=()=>showStep(i);
-    row.appendChild(div);
-  });
-  showStep(0);
-}
-
-function showStep(i){
-  document.querySelectorAll('.flow-step').forEach((el,j)=>el.classList.toggle('active',j===i));
-  const s=stepData[i];
-  document.getElementById('fd-title').textContent=s.title;
-  document.getElementById('fd-desc').textContent=s.desc;
-  document.getElementById('fd-docs').innerHTML=s.docs.map(d=>`
-    <a class="doc-link" href="${d.url}">
-      <i class="ti ti-file-text" style="font-size:15px;color:var(--text2)"></i>
-      <span style="flex:1">${d.label}</span>
-      ${tagHTML(d.tag)}
-    </a>`).join('');
-}
-
-function buildApoyo(){
-  const g=document.getElementById('apoyo-grid');
-  g.innerHTML=apoyoData.map(a=>`
-    <div style="background:var(--gray-bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <i class="ti ${a.icon}" style="font-size:18px;color:var(--blue)"></i>
-        <span style="font-size:13px;font-weight:500">${a.title}</span>
-      </div>
-      ${a.docs.map(d=>`<a class="doc-link" href="${d.url}" style="margin-bottom:4px;font-size:12px">
-        <i class="ti ti-file-text" style="font-size:13px;color:var(--text3)"></i>
-        <span style="flex:1">${d.label}</span></a>`).join('')}
-    </div>`).join('');
-}
-
-function filterDocs(cat,btn){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  const filtered=cat==='all'?allDocs:allDocs.filter(d=>d.cat===cat);
-  document.getElementById('docs-grid').innerHTML=filtered.map(d=>`
-    <a class="doc-link" href="${d.url}">
-      <i class="ti ti-file-text" style="font-size:15px;color:var(--text2)"></i>
-      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.label}</span>
-      ${tagHTML(d.tag)}
-    </a>`).join('');
-}
-
-function buildRegs(){
-  document.getElementById('reg-tbody').innerHTML=regData.map(r=>`
-    <tr>
-      <td style="font-weight:500">${r.label}</td>
-      <td style="color:var(--blue);font-size:12px;font-weight:500">${r.cod}</td>
-      <td style="color:var(--text2);font-size:12px">${r.fecha}</td>
-      <td style="font-size:12px">${r.resultado}</td>
-      <td><span class="${r.ok?'status-ok':'status-wip'}">${r.ok?'✓ Cerrado':'En proceso'}</span></td>
-      <td><a href="${r.url}" style="font-size:12px;color:var(--blue);text-decoration:none">
-        <i class="ti ti-external-link" style="font-size:14px"></i></a></td>
-    </tr>`).join('');
-}
-
-function showSection(id, btn){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('s-'+id).classList.add('active');
-  if(btn) btn.classList.add('active');
-}
-
-function animCount(id,target,suffix,dur){
-  const el=document.getElementById(id);
-  if(!el) return;
-  const start=performance.now();
-  (function step(now){
-    const t=Math.min((now-start)/dur,1);
-    const ease=1-Math.pow(1-t,3);
-    el.textContent=Math.round(ease*target)+suffix;
-    if(t<1) requestAnimationFrame(step);
-  })(performance.now());
-}
-
-setTimeout(()=>{
-  animCount('n1',94,'%',1200);
-  animCount('n2',87,'%',1200);
-  animCount('n3',41,'%',1200);
-  animCount('n4',92,'d',1000);
-  animCount('n5',54,' USD',1000);
-  setTimeout(()=>{
-    document.getElementById('b9001').style.width='96%';
-    document.getElementById('b14001').style.width='94%';
-    document.getElementById('b45001').style.width='91%';
-  },400);
-},300);
-
-new Chart(document.getElementById('kpiChart'),{
-  type:'line',
-  data:{labels:['Abril','Mayo'],datasets:[
-    {label:'Precisión IA',data:[91,94.2],borderColor:'#185FA5',pointStyle:'circle',tension:.4,fill:false,borderWidth:2},
-    {label:'Baterías rec.',data:[75,87.5],borderColor:'#3B6D11',pointStyle:'triangle',tension:.4,fill:false,borderWidth:2},
-    {label:'Reducción agroquím.',data:[32,41],borderColor:'#BA7517',pointStyle:'rect',tension:.4,fill:false,borderDash:[4,3],borderWidth:2},
-  ]},
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      y:{min:20,max:100,ticks:{callback:v=>v+'%',font:{size:11}},grid:{color:'rgba(128,128,128,0.1)'}},
-      x:{ticks:{font:{size:11}},grid:{display:false}}
-    },animation:{duration:1200}}
-});
-
-new Chart(document.getElementById('unitsChart'),{
-  type:'doughnut',
-  data:{labels:['En campo (3)','En taller (1)'],
-    datasets:[{data:[3,1],backgroundColor:['#3B6D11','#BA7517'],
-      hoverBackgroundColor:['#27500A','#633806'],borderWidth:0}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'70%',
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label}}},
-    animation:{duration:1200,animateRotate:true}}
-});
-
-buildFlow();
-buildApoyo();
-filterDocs('all',null);
-buildRegs();
-</script>
 </body>
 </html>
