@@ -1,8 +1,9 @@
-// ── 3D SKILLS CLOUD ───────────────────────────────────────
+// ── 3D SKILLS CLOUD — FIXED ───────────────────────────────────
 const SkillsCloud = (() => {
   let points = [], raf = null;
   let rotX = 0.3, rotY = 0, velX = 0, velY = 0.003;
   let dragging = false, lastX = 0, lastY = 0;
+  let initialized = false;
 
   function spherePoint(i, n) {
     const phi = Math.acos(-1 + (2 * i) / n);
@@ -14,63 +15,51 @@ const SkillsCloud = (() => {
     };
   }
 
-  function init() {
-    const container = document.getElementById('skills-cloud');
-    if (!container) return;
+  function buildTags(container) {
+    // Limpiar tags anteriores si los hay
+    container.querySelectorAll('.skill-tag').forEach(el => el.remove());
+    points = [];
 
     const n = DATA.habilidades.length;
-    points = DATA.habilidades.map((label, i) => {
+    DATA.habilidades.forEach((label, i) => {
       const sp = spherePoint(i, n);
       const el = document.createElement('div');
       el.className = 'skill-tag';
       el.textContent = label;
+      // Posición inicial en el centro del contenedor para evitar flash a la derecha
+      el.style.left = '50%';
+      el.style.top = '50%';
+      el.style.transform = 'translate(-50%,-50%)';
       container.appendChild(el);
-      return { ...sp, el };
+      points.push({ ...sp, el });
     });
-
-    container.addEventListener('mousedown', e => {
-      dragging = true; lastX = e.clientX; lastY = e.clientY;
-      velX = 0; velY = 0;
-    });
-    window.addEventListener('mouseup', () => { dragging = false; });
-    window.addEventListener('mousemove', e => {
-      if (!dragging) return;
-      const dx = e.clientX - lastX, dy = e.clientY - lastY;
-      velY = dx * 0.005; velX = dy * 0.005;
-      rotY += velY; rotX += velX;
-      lastX = e.clientX; lastY = e.clientY;
-    });
-    container.addEventListener('touchstart', e => {
-      if (e.touches.length === 1) { lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; dragging = true; }
-    });
-    container.addEventListener('touchmove', e => {
-      if (!dragging) return;
-      const dx = e.touches[0].clientX - lastX, dy = e.touches[0].clientY - lastY;
-      velY = dx * 0.005; velX = dy * 0.005;
-      rotY += velY; rotX += velX;
-      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-    });
-
-    loop();
   }
 
   function rotate3D(p, rx, ry) {
-    // Rotate around Y
     const cosY = Math.cos(ry), sinY = Math.sin(ry);
     let x = p.x * cosY - p.z * sinY;
     let z = p.x * sinY + p.z * cosY;
-    let y = p.y;
-    // Rotate around X
     const cosX = Math.cos(rx), sinX = Math.sin(rx);
-    let y2 = y * cosX - z * sinX;
-    let z2 = y * sinX + z * cosX;
+    let y2 = p.y * cosX - z * sinX;
+    let z2 = p.y * sinX + z * cosX;
     return { x, y: y2, z: z2 };
   }
 
   function loop() {
     raf = requestAnimationFrame(loop);
     const container = document.getElementById('skills-cloud');
-    if (!container) return;
+    if (!container || points.length === 0) return;
+
+    // ── FIX CLAVE: obtener dimensiones reales ──
+    // Si el contenedor no tiene ancho todavía, buscar en el padre
+    let W = container.offsetWidth;
+    let H = container.offsetHeight;
+
+    if (W < 10) W = container.parentElement?.offsetWidth || 600;
+    if (H < 10) H = 400;
+
+    const R = Math.min(W, H) * 0.38;
+    const CX = W / 2, CY = H / 2;
 
     if (!dragging) {
       velY += (0.003 - velY) * 0.02;
@@ -78,10 +67,6 @@ const SkillsCloud = (() => {
       rotY += velY;
       rotX += velX;
     }
-
-    const W = container.offsetWidth, H = container.offsetHeight;
-    const R = Math.min(W, H) * 0.38;
-    const CX = W / 2, CY = H / 2;
 
     points.forEach(p => {
       const r = rotate3D(p, rotX, rotY);
@@ -97,17 +82,79 @@ const SkillsCloud = (() => {
     });
   }
 
+  function bindEvents(container) {
+    container.addEventListener('mousedown', e => {
+      dragging = true; lastX = e.clientX; lastY = e.clientY;
+      velX = 0; velY = 0;
+    });
+    window.addEventListener('mouseup', () => { dragging = false; });
+    window.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      velY = dx * 0.005; velX = dy * 0.005;
+      rotY += velY; rotX += velX;
+      lastX = e.clientX; lastY = e.clientY;
+    });
+    container.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; dragging = true;
+      }
+    }, { passive: true });
+    container.addEventListener('touchmove', e => {
+      if (!dragging || e.touches.length < 1) return;
+      const dx = e.touches[0].clientX - lastX, dy = e.touches[0].clientY - lastY;
+      velY = dx * 0.005; velX = dy * 0.005;
+      rotY += velY; rotX += velX;
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    }, { passive: true });
+  }
+
+  function init() {
+    const container = document.getElementById('skills-cloud');
+    if (!container) return;
+
+    // Parar loop anterior si existe
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+
+    buildTags(container);
+    if (!initialized) {
+      bindEvents(container);
+      initialized = true;
+    }
+
+    // ── FIX: esperar a que el contenedor tenga dimensiones reales ──
+    // Usar ResizeObserver para detectar cuando el contenedor sea visible
+    const observer = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        const W = entry.contentRect.width;
+        if (W > 50) {
+          observer.disconnect();
+          if (!raf) loop(); // arrancar el loop recién cuando hay dimensiones
+        }
+      }
+    });
+    observer.observe(container);
+
+    // Fallback: si ya tiene dimensiones ahora mismo, arrancar igual
+    if (container.offsetWidth > 50) {
+      observer.disconnect();
+      if (!raf) loop();
+    }
+  }
+
   return { init };
 })();
 
-// ── 3D TILT PORTFOLIO ─────────────────────────────────────
+// ── 3D TILT PORTFOLIO ─────────────────────────────────────────
 const PortfolioModule = (() => {
   const cats = { all: 'Todos', est: 'Estratégicos', proc: 'Procedimientos', mat: 'Matrices', form: 'Formularios' };
-  const icons = { book:'📖', target:'🎯', shield:'🛡️', sitemap:'🗺️', users:'👥', 'alert-triangle':'⚠️', 'chart-bar':'📊',
+  const icons = {
+    book:'📖', target:'🎯', shield:'🛡️', sitemap:'🗺️', users:'👥', 'alert-triangle':'⚠️', 'chart-bar':'📊',
     files:'📁', cpu:'🖥️', 'shopping-cart':'🛒', tool:'🔧', 'x-circle':'❌', 'alert-octagon':'🚨',
     'clipboard-check':'✅', presentation:'📊', school:'🎓', 'message-circle':'💬',
     leaf:'🌿', 'shield-alert':'⚠️', recycle:'♻️',
-    'file-x':'📄', brain:'🧠', droplet:'💧', 'check-square':'☑️', map:'🗺️' };
+    'file-x':'📄', brain:'🧠', droplet:'💧', 'check-square':'☑️', map:'🗺️'
+  };
 
   function applyTilt(card) {
     card.addEventListener('mousemove', e => {
@@ -158,7 +205,7 @@ const PortfolioModule = (() => {
   return { buildFilters, render, setFilter };
 })();
 
-// ── TIMELINE ──────────────────────────────────────────────
+// ── TIMELINE ──────────────────────────────────────────────────
 const TimelineModule = (() => {
   function render() {
     const track = document.getElementById('timeline-track');
@@ -177,7 +224,7 @@ const TimelineModule = (() => {
   return { render };
 })();
 
-// ── REGISTROS ─────────────────────────────────────────────
+// ── REGISTROS ─────────────────────────────────────────────────
 const RegModule = (() => {
   function render() {
     const tbody = document.getElementById('reg-tbody');
