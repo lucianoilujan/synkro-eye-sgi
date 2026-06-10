@@ -462,3 +462,20 @@ body{
   background:rgba(76,175,130,0.15);color:var(--green2);
   border:1px solid rgba(76,175,130,0.3);
 }
+/* Estilos para la sección campo */
+#sec-campo .btn-sm {
+  transition: all 0.2s ease;
+}
+#sec-campo .btn-sm:hover {
+  transform: translateY(-2px);
+  background: var(--green2) !important;
+  color: white;
+}
+#campo-map-container svg {
+  transition: all 0.3s;
+}
+@media (max-width: 768px) {
+  .two-col {
+    flex-direction: column;
+  }
+}

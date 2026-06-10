@@ -23,6 +23,7 @@
     <button class="nav-link active" data-sec="hero" onclick="App.showSection('hero')">Inicio</button>
     <button class="nav-link" data-sec="dashboard" onclick="App.showSection('dashboard')">Dashboard</button>
     <button class="nav-link" data-sec="flujo" onclick="App.showSection('flujo')">Procesos</button>
+    <button class="nav-link" data-sec="campo" onclick="App.showSection('campo')">Campo</button>
     <button class="nav-link" data-sec="documentos" onclick="App.showSection('documentos')">Documentos</button>
     <button class="nav-link" data-sec="timeline" onclick="App.showSection('timeline')">Timeline</button>
     <button class="nav-link" data-sec="registros" onclick="App.showSection('registros')">Registros</button>
@@ -239,7 +240,183 @@
 
   </div>
 </section>
+<section id="sec-campo" class="section">
+  <div class="container">
 
+    <div class="sec-header fade-up">
+      <div class="sec-tag">Datos de Campo</div>
+      <h2 class="sec-title">Estancia Los Robles · 50 ha · Maíz (Villa María)</h2>
+      <p class="sec-desc">Validación real — 4 nodos en grilla simétrica 2×2 · 191 insectos detectados · 84% reducción de área tratada</p>
+    </div>
+
+    <div class="glass" style="padding: 24px; margin-bottom: 24px; display: flex; flex-direction: column;">
+      <div style="font-weight: 700; margin-bottom: 16px; font-size: 16px; color: #fff; display: flex; justify-content: space-between; align-items: center;">
+        <span>Centro de Monitoreo Georeferenciado (Escala Real 1px = 1m)</span>
+        <span style="font-size: 12px; color: #3b82f6; background: rgba(59,130,246,0.1); padding: 4px 10px; border-radius: 12px;">Estado: ONLINE</span>
+      </div>
+      
+      <div id="campo-map-container" style="background: #111b14; border-radius: 16px; padding: 12px; text-align: center;">
+        <svg id="mapa-svg" viewBox="0 0 1000 500" style="width:100%; height:auto; background: #1b2e1e; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); overflow: visible;">
+          
+          <defs>
+            <pattern id="surcos" width="20" height="20" patternUnits="userSpaceOnUse">
+              <line x1="0" y1="10" x2="20" y2="10" stroke="#28442c" stroke-width="1.5" />
+            </pattern>
+          </defs>
+
+          <rect x="0" y="0" width="1000" height="500" fill="#223a26" rx="12"/>
+          <rect x="0" y="0" width="1000" height="500" fill="url(#surcos)" rx="12" opacity="0.7"/>
+          
+          <g stroke="#ffffff" stroke-width="1" stroke-dasharray="6,6" opacity="0.15">
+            <line x1="500" y1="0" x2="500" y2="500" />
+            <line x1="0" y1="250" x2="1000" y2="250" />
+          </g>
+
+          <rect x="420" y="30" width="180" height="160" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,4"/>
+          <rect x="50" y="240" width="160" height="150" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+          <circle cx="250" cy="125" r="350" fill="none" stroke="#f59e0b" stroke-width="1" stroke-dasharray="6,6" opacity="0.15"/>
+          <circle cx="250" cy="125" r="250" fill="#3b82f6" fill-opacity="0.04" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4,4" opacity="0.5"/>
+          
+          <circle cx="750" cy="125" r="350" fill="none" stroke="#f59e0b" stroke-width="1" stroke-dasharray="6,6" opacity="0.15"/>
+          <circle cx="750" cy="125" r="250" fill="#3b82f6" fill-opacity="0.04" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4,4" opacity="0.5"/>
+          
+          <circle cx="250" cy="375" r="350" fill="none" stroke="#f59e0b" stroke-width="1" stroke-dasharray="6,6" opacity="0.15"/>
+          <circle cx="250" cy="375" r="250" fill="#3b82f6" fill-opacity="0.04" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4,4" opacity="0.5"/>
+          
+          <circle cx="750" cy="375" r="350" fill="none" stroke="#f59e0b" stroke-width="1" stroke-dasharray="6,6" opacity="0.15"/>
+          <circle cx="750" cy="375" r="250" fill="#3b82f6" fill-opacity="0.04" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4,4" opacity="0.5"/>
+
+          <rect x="250" y="210" width="500" height="80" fill="#10b981" fill-opacity="0.08" stroke="#10b981" stroke-width="1" stroke-dasharray="2,2"/>
+          <rect x="460" y="125" width="80" height="250" fill="#10b981" fill-opacity="0.08" stroke="#10b981" stroke-width="1" stroke-dasharray="2,2"/>
+
+          <g font-family="Arial" font-weight="bold">
+            <text x="60" y="55" fill="#ffffff" font-size="14">Sector A</text>
+            <text x="60" y="75" fill="#93c5fd" font-size="12" font-weight="normal">38 Spodoptera</text>
+            
+            <text x="440" y="55" fill="#f87171" font-size="14">Sector B ⚠</text>
+            <text x="440" y="75" fill="#fca5a5" font-size="12" font-weight="normal">52 Spodoptera</text>
+            
+            <text x="820" y="55" fill="#ffffff" font-size="14">Sector C</text>
+            <text x="820" y="75" fill="#93c5fd" font-size="12" font-weight="normal">27 Spodoptera</text>
+            
+            <text x="70" y="285" fill="#fbbf24" font-size="14">Sector D</text>
+            <text x="70" y="305" fill="#fcd34d" font-size="12" font-weight="normal">29 Helicoverpa</text>
+            
+            <text x="440" y="445" fill="#ffffff" font-size="14">Sector E</text>
+            <text x="440" y="465" fill="#a7f3d0" font-size="12" font-weight="normal">21 trips</text>
+            
+            <text x="820" y="445" fill="#ffffff" font-size="14">Sector F</text>
+            <text x="820" y="465" fill="#a7f3d0" font-size="12" font-weight="normal">24 orugas</text>
+          </g>
+
+          <g class="grupo-nodos">
+            <circle cx="250" cy="125" r="10" fill="#3b82f6" stroke="#ffffff" stroke-width="2.5" style="cursor:pointer;" class="nodo" data-nodo="1"/>
+            <text x="230" y="105" fill="#ffffff" font-size="12" font-weight="bold">Nodo 1 (NW)</text>
+            
+            <circle cx="750" cy="125" r="10" fill="#3b82f6" stroke="#ffffff" stroke-width="2.5" style="cursor:pointer;" class="nodo" data-nodo="2"/>
+            <text x="730" y="105" fill="#ffffff" font-size="12" font-weight="bold">Nodo 2 (NE)</text>
+            
+            <circle cx="250" cy="375" r="10" fill="#3b82f6" stroke="#ffffff" stroke-width="2.5" style="cursor:pointer;" class="nodo" data-nodo="3"/>
+            <text x="230" y="355" fill="#ffffff" font-size="12" font-weight="bold">Nodo 3 (SW)</text>
+            
+            <circle cx="750" cy="375" r="10" fill="#3b82f6" stroke="#ffffff" stroke-width="2.5" style="cursor:pointer;" class="nodo" data-nodo="4"/>
+            <text x="730" y="355" fill="#ffffff" font-size="12" font-weight="bold">Nodo 4 (SE)</text>
+          </g>
+
+          <g transform="translate(20, 410)" font-family="Arial" font-size="11" fill="#ffffff">
+            <rect width="320" height="75" fill="#0b130e" fill-opacity="0.85" rx="6" stroke="#28442c" stroke-width="1"/>
+            <circle cx="15" cy="18" r="4" fill="#3b82f6"/>
+            <text x="26" y="21" font-weight="bold">Nodo Synkro-Eye (Físico)</text>
+            <line x1="10" y1="38" x2="22" y2="38" stroke="#3b82f6" stroke-width="2" stroke-dasharray="3,2"/>
+            <text x="26" y="41">Radio Eficiente Operacional (250m)</text>
+            <line x1="10" y1="58" x2="22" y2="58" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,4"/>
+            <text x="26" y="61" fill="#94a3b8">Radio Máximo Atmosférico (350m)</text>
+          </g>
+        </svg>
+      </div>
+
+      <div id="nodo-detail" class="glass" style="margin-top: 16px; padding: 14px; font-size: 13px; background: var(--bg2); border-radius: 8px; border-left: 4px solid #3b82f6;">
+        <span style="font-weight: 700; color: #3b82f6;">Auditoría Remota de Flota:</span> Hacé clic sobre cualquiera de los 4 nodos para desplegar los registros lógicos y la telemetría del chip.
+      </div>
+    </div>
+<div class="two-col" style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; margin-bottom: 16px; align-items: stretch;">
+      
+      <div class="glass" style="padding: 12px; display: flex; flex-direction: column; justify-content: center;">
+        <div class="sec-tag" style="margin-bottom: 10px; font-size: 10px; letter-spacing: 0.5px;"> KPIs de Campo y Operación (Mayo 2026)</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px;">
+          <div><span style="font-size: 20px; font-weight: 800; color: var(--green2); line-height: 1;">191</span><br><span style="font-size: 10px; font-weight: 500; color: var(--text2);">Insectos detectados</span></div>
+          <div><span style="font-size: 20px; font-weight: 800; color: var(--green2); line-height: 1;">84%</span><br><span style="font-size: 10px; font-weight: 500; color: var(--text2);">Reducción área tratada</span></div>
+          <div><span style="font-size: 20px; font-weight: 800; color: var(--green2); line-height: 1;">94.2%</span><br><span style="font-size: 10px; font-weight: 500; color: var(--text2);">Precisión IA (OpenCV)</span></div>
+          <div><span style="font-size: 20px; font-weight: 800; color: var(--green2); line-height: 1;">$51.50</span><br><span style="font-size: 10px; font-weight: 500; color: var(--text2);">Costo por nodo</span></div>
+          <div><span style="font-size: 20px; font-weight: 800; color: var(--green2); line-height: 1;">98.26%</span><br><span style="font-size: 10px; font-weight: 500; color: var(--text2);">Disponibilidad planta</span></div>
+          <div><span style="font-size: 20px; font-weight: 800; color: var(--green2); line-height: 1;">99.29%</span><br><span style="font-size: 10px; font-weight: 500; color: var(--text2);">Disponibilidad campo</span></div>
+          <div><span style="font-size: 20px; font-weight: 800; color: var(--green2); line-height: 1;">87.5%</span><br><span style="font-size: 10px; font-weight: 500; color: var(--text2);">Baterías recuperadas</span></div>
+          <div><span style="font-size: 20px; font-weight: 800; color: var(--green2); line-height: 1;">-73.8%</span><br><span style="font-size: 10px; font-weight: 500; color: var(--text2);">Costo operativo mensual</span></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; justify-content: space-between;">
+        <div class="glass" style="padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+          <div class="sec-tag" style="font-size: 10px; margin-bottom: 4px;">Confiabilidad de Flota (4 Nodos)</div>
+          <table style="width:100%; font-size: 11px; border-collapse: collapse; line-height: 1.5;">
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td><strong>MTBF</strong></td><td style="text-align: right;">1.410 h (≈58 días)</td></tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td><strong>MTTR</strong></td><td style="text-align: right;">10 h (logística rural)</td></tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td><strong>Disponibilidad (As)</strong></td><td style="text-align: right; color: var(--green2); font-weight: bold;">99.29%</td></tr>
+            <tr><td><strong>Mantenimiento/Nodo</strong></td><td style="text-align: right;">USD 4 / mes</td></tr>
+          </table>
+        </div>
+        <div class="glass" style="padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+          <div class="sec-tag" style="font-size: 10px; margin-bottom: 4px;">Análisis de Ahorro Mensual (50 ha)</div>
+          <table style="width:100%; font-size: 11px; border-collapse: collapse; line-height: 1.5;">
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td>Proceso manual histórico</td><td style="text-align: right; font-weight: bold;">USD 1.475</td></tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td>Ecosistema Automatizado Synkro</td><td style="text-align: right; color: var(--green2); font-weight: bold;">USD 216</td></tr>
+            <tr style="background: rgba(16,185,129,0.05); font-size: 12px;"><td><strong>Reducción de Costo Directo</strong></td><td style="text-align: right; color: var(--green2); font-weight: bold;">-85.3%</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass" style="padding: 12px; margin-bottom: 16px;">
+      <div class="sec-tag" style="margin-bottom: 8px; font-size: 10px;">📄 Documentación del Sistema Integrado (Registros Drive)</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <a href="#" class="btn-sm" style="background: var(--bg2); padding: 4px 10px; border-radius: 4px; text-decoration: none; font-size: 10px; border: 1px solid rgba(255,255,255,0.05);" target="_blank" onclick="alert('Abriendo SGI-F-07-REG-ENC en Drive')">📋 SGI-F-07-REG-ENC</a>
+        <a href="#" class="btn-sm" style="background: var(--bg2); padding: 4px 10px; border-radius: 4px; text-decoration: none; font-size: 10px; border: 1px solid rgba(255,255,255,0.05);" target="_blank" onclick="alert('Abriendo SGI-F-19-REG-Conteo')">🐛 SGI-F-19-REG-Conteo</a>
+        <a href="#" class="btn-sm" style="background: var(--bg2); padding: 4px 10px; border-radius: 4px; text-decoration: none; font-size: 10px; border: 1px solid rgba(255,255,255,0.05);" target="_blank" onclick="alert('Abriendo SGI-F-20-REG-Reducción')">📉 SGI-F-20-REG-Reducción</a>
+        <a href="#" class="btn-sm" style="background: var(--bg2); padding: 4px 10px; border-radius: 4px; text-decoration: none; font-size: 10px; border: 1px solid rgba(255,255,255,0.05);" target="_blank" onclick="alert('Abriendo SGI-F-16-REG-VAL')">🤖 SGI-F-16-REG-VAL</a>
+        <a href="#" class="btn-sm" style="background: var(--bg2); padding: 4px 10px; border-radius: 4px; text-decoration: none; font-size: 10px; border: 1px solid rgba(255,255,255,0.05);" target="_blank" onclick="alert('Abriendo SGI-MNT-B-01')">🔧 SGI-MNT-B-01</a>
+        <a href="#" class="btn-sm" style="background: var(--bg2); padding: 4px 10px; border-radius: 4px; text-decoration: none; font-size: 10px; border: 1px solid rgba(255,255,255,0.05);" target="_blank" onclick="alert('Abriendo SGI-F-08-REG-LOG')">♻️ SGI-F-08-REG-LOG</a>
+      </div>
+    </div>
+
+    <div class="glass" style="padding: 24px;">
+      <div class="sec-tag" style="margin-bottom: 14px;"> Libro de No Conformidades y Acciones Correctivas (Auditoría Trinorma)</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div style="border-left: 4px solid #f0a843; background: var(--bg1); padding: 16px; border-radius: 12px;">
+          <div style="font-weight: 800;"> NC-007 · Falsos positivos por flare</div>
+          <div style="font-size: 12px; margin: 8px 0; color: var(--text2);">Reflejos solares en lente OV2640 → error >15%. Solución: cono anti-reflejo negro mate, distancia focal 150mm. Precisión 94.2%.</div>
+          <div style="display: flex; gap: 12px; font-size: 11px; color: var(--green2);">⏱️ MTTR: 3h · 📅 Cerrada: 22/05/2026</div>
+        </div>
+        <div style="border-left: 4px solid #f0a843; background: var(--bg1); padding: 16px; border-radius: 12px;">
+          <div style="font-weight: 800;"> EM-001 · Exposición química a feromonas</div>
+          <div style="font-size: 12px; margin: 8px 0; color: var(--text2);">Técnico sin guantes → irritación. Solución: EPP obligatorio (guantes nitrilo, gafas) + SGI-P-09.</div>
+          <div style="font-size: 11px; color: var(--green2);">✅ Cerrada: 22/05/2026 · ISO 45001</div>
+        </div>
+        <div style="border-left: 4px solid #4f8ef7; background: var(--bg1); padding: 16px; border-radius: 12px;">
+          <div style="font-weight: 800;"> THERMAL_PROTECT · Baterías >45°C</div>
+          <div style="font-size: 12px; margin: 8px 0; color: var(--text2);">Temperatura interna >45°C → riesgo degradación. Solución: cámara de aire aislante + Deep Sleep en firmware.</div>
+          <div style="font-size: 11px; color: var(--green2);">🔧 MTTR campo: 10h · MTBF: 1.410h</div>
+        </div>
+        <div style="border-left: 4px solid #4caf82; background: var(--bg1); padding: 16px; border-radius: 12px;">
+          <div style="font-weight: 800;"> Logística inversa · Ley 24.051</div>
+          <div style="font-size: 12px; margin: 8px 0; color: var(--text2);">Recuperación baterías 18650. Solución: SGI-LOG-08 + convenio RAEE. Resultado: 87.5% recuperación.</div>
+          <div style="font-size: 11px; color: var(--green2);"> ISO 14001 · Ahorro mantenimiento -73.3%</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
 </div><!-- #app -->
 
 <!-- KPI MODAL -->
@@ -256,6 +433,128 @@
 <script src="js/flow.js"></script>
 <script src="js/components.js"></script>
 <script src="js/app.js"></script>
+
+<script>
+  // Datos de cada nodo (versión completa)
+  const nodosData = {
+    1: { 
+      nombre: 'Nodo 1', 
+      insectos: 48, 
+      temperatura: '39°C', 
+      mtbf: '1420 h', 
+      ultimo_mant: '12/05/2026', 
+      bateria: '92%', 
+      estado: 'ACTIVO',
+      cobertura: '250m efectivo / 350m máx',
+      ultima_alerta: 'Ninguna'
+    },
+    2: { 
+      nombre: 'Nodo 2', 
+      insectos: 52, 
+      temperatura: '42°C', 
+      mtbf: '1380 h', 
+      ultimo_mant: '15/05/2026', 
+      bateria: '88%', 
+      estado: 'ACTIVO',
+      cobertura: '250m efectivo / 350m máx',
+      ultima_alerta: 'THERMAL_PROTECT (15/05 14:30h)'
+    },
+    3: { 
+      nombre: 'Nodo 3', 
+      insectos: 35, 
+      temperatura: '37°C', 
+      mtbf: '1450 h', 
+      ultimo_mant: '18/05/2026', 
+      bateria: '94%', 
+      estado: 'ACTIVO',
+      cobertura: '250m efectivo / 350m máx',
+      ultima_alerta: 'Ninguna'
+    },
+    4: { 
+      nombre: 'Nodo 4', 
+      insectos: 56, 
+      temperatura: '41°C', 
+      mtbf: '1400 h', 
+      ultimo_mant: '20/05/2026', 
+      bateria: '90%', 
+      estado: 'ACTIVO',
+      cobertura: '250m efectivo / 350m máx',
+      ultima_alerta: 'Batería baja (20/05)'
+    }
+  };
+
+  let activeCard = null;
+
+  function crearCard(nodoId, x, y) {
+    const data = nodosData[nodoId];
+    if (!data) return;
+
+    // Si ya hay una card visible, la eliminamos
+    if (activeCard) activeCard.remove();
+
+    const card = document.createElement('div');
+    card.className = 'nodo-card-flotante';
+    card.innerHTML = `
+      <div style="background: var(--bg2); border-radius: 16px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); border-left: 4px solid #ffaa44; min-width: 220px; backdrop-filter: blur(4px);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-weight: 800; font-size: 18px;">📍 ${data.nombre}</span>
+          <span style="background: ${data.estado === 'ACTIVO' ? '#4caf82' : '#f0a843'}; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;">${data.estado}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px;">
+          <div>🐛 Insectos: <strong>${data.insectos}</strong></div>
+          <div>🌡️ Temp: <strong>${data.temperatura}</strong></div>
+          <div>⏱️ MTBF: <strong>${data.mtbf}</strong></div>
+          <div>🔋 Batería: <strong>${data.bateria}</strong></div>
+          <div>🛠️ Último mant.: <strong>${data.ultimo_mant}</strong></div>
+          <div>📡 Cobertura: <strong>${data.cobertura}</strong></div>
+        </div>
+        <div style="margin-top: 8px; font-size: 11px; color: #ffaa66;">
+          ⚠️ ${data.ultima_alerta}
+        </div>
+        <div style="margin-top: 6px; font-size: 10px; color: var(--text3);">
+          ✅ Radio eficiente 250m · Zona redundante
+        </div>
+      </div>
+    `;
+    document.body.appendChild(card);
+
+    // Posicionar la card cerca del cursor (o cerca del nodo)
+    card.style.position = 'fixed';
+    card.style.left = (x + 15) + 'px';
+    card.style.top = (y - 80) + 'px';
+    card.style.zIndex = '9999';
+    card.style.transition = '0.1s ease';
+
+    activeCard = card;
+
+    // Cerrar card al hacer clic fuera de ella (con un pequeño retardo para evitar cierre inmediato)
+    setTimeout(() => {
+      const cerrar = (e) => {
+        if (!card.contains(e.target)) {
+          card.remove();
+          activeCard = null;
+          document.removeEventListener('click', cerrar);
+        }
+      };
+      document.addEventListener('click', cerrar);
+    }, 100);
+  }
+
+  // Asignar evento a cada nodo
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      const nodos = document.querySelectorAll('.nodo');
+      nodos.forEach(nodo => {
+        nodo.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const nodoId = nodo.getAttribute('data-nodo');
+          // Obtener coordenadas del mouse para posicionar la card
+          crearCard(parseInt(nodoId), e.clientX, e.clientY);
+        });
+      });
+    }, 500);
+  });
+</script>
 
 </body>
 </html>

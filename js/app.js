@@ -4,12 +4,13 @@ const App = (() => {
   let radialOpen = false;
   let currentSection = 'hero';
 
-  const sections = ['hero','dashboard','flujo','documentos','timeline','registros'];
+  const sections = ['hero','dashboard','flujo','campo','documentos','timeline','registros'];
 
   const radialItems = [
     { icon:'🏠', label:'Inicio', section:'hero' },
     { icon:'📊', label:'Dashboard', section:'dashboard' },
     { icon:'🔀', label:'Flujo', section:'flujo' },
+    { icon:'🗺️', label:'Campo', section:'campo' },
     { icon:'📁', label:'Documentos', section:'documentos' },
     { icon:'📅', label:'Timeline', section:'timeline' },
     { icon:'📋', label:'Registros', section:'registros' },
@@ -62,6 +63,9 @@ const App = (() => {
     if (id === 'registros') RegModule.render();
     if (id === 'dashboard' || id === 'hero') {
       setTimeout(() => SkillsCloud.init(), 200);
+    }
+    if (id === 'campo') {
+      setTimeout(() => CampoModule.init(), 200);
     }
 
     closeRadial();
